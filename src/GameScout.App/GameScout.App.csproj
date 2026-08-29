@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- WinForms is enabled only for the tray NotifyIcon; all UI is WPF. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>GameScout</AssemblyName>
+    <RootNamespace>GameScout.App</RootNamespace>
+    <ApplicationIcon>Assets\gamescout.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Embedded so the window and tray icon can load it at runtime via a pack URI. -->
+    <Resource Include="Assets\gamescout.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameScout.Core\GameScout.Core.csproj" />
+  </ItemGroup>
+
+</Project>

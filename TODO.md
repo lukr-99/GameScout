@@ -5,11 +5,11 @@ Actionable next slices. Check off as delivered.
 ## Do first (on the new machine)
 - [x] **Data-pipeline smoke test** — verified end-to-end via a live headless run: both sources hit
       real APIs, aggregator merged 3 free + 1 upcoming, no errors. See the scan log at
-      `%LOCALAPPDATA%\FreeGameScout\scout.log`.
+      `%LOCALAPPDATA%\GameScout\scout.log`.
 - [ ] **Visual smoke test (still pending — needs a real display):** confirm the window renders and
       the cards look right. Everything behind the UI is proven; only pixels are unverified.
 - [ ] Verify **theme toggle** swaps light/dark correctly at runtime.
-- [ ] Verify **Run at startup** writes/removes `HKCU\...\Run\FreeGameScout`, and that the
+- [ ] Verify **Run at startup** writes/removes `HKCU\...\Run\GameScout`, and that the
       `--tray` launch comes up hidden with a balloon.
 - [ ] Verify **close → hides to tray**, tray **Exit** quits, and a card click opens the browser.
 

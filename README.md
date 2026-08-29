@@ -1,4 +1,4 @@
-# FreeGameScout
+# GameScout
 
 A small **WPF (.NET 10) Windows tray app** that checks what games are **free to keep** right now —
 and **coming soon** — on the **Epic Games Store** and **Steam**, then gives you a quick rundown at
@@ -21,20 +21,20 @@ startup. Glance at it, grab what you want, close it.
 
 ## Build & run
 ```bash
-dotnet build FreeGameScout.slnx -c Release
-dotnet test  FreeGameScout.slnx -c Release
-dotnet run   --project src/FreeGameScout.App
+dotnet build GameScout.slnx -c Release
+dotnet test  GameScout.slnx -c Release
+dotnet run   --project src/GameScout.App
 ```
-Start hidden in the tray (used by the startup entry): `dotnet run --project src/FreeGameScout.App -- --tray`
+Start hidden in the tray (used by the startup entry): `dotnet run --project src/GameScout.App -- --tray`
 
 ## Architecture
 Dependency direction is **App → Core**; `Core` has **no WPF dependency** and is fully unit-tested.
 
 | Project | Target | Responsibility |
 | --- | --- | --- |
-| `src/FreeGameScout.Core` | `net10.0` | Domain model, giveaway sources, aggregator, MVVM base |
-| `src/FreeGameScout.App` | `net10.0-windows` | WPF UI, tray icon, startup registration, theming |
-| `tests/FreeGameScout.Core.Tests` | `net10.0` | xUnit tests (deterministic, no network) |
+| `src/GameScout.Core` | `net10.0` | Domain model, giveaway sources, aggregator, MVVM base |
+| `src/GameScout.App` | `net10.0-windows` | WPF UI, tray icon, startup registration, theming |
+| `tests/GameScout.Core.Tests` | `net10.0` | xUnit tests (deterministic, no network) |
 
 See **[STRUCTURE.md](STRUCTURE.md)** for the full layout and **[RULES.md](RULES.md)** for the
 engineering rules this repo follows.

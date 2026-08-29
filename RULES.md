@@ -1,11 +1,11 @@
 # RULES
 
-Engineering rules for FreeGameScout (adapted from the sibling `dotnetlib` conventions).
+Engineering rules for GameScout (adapted from the sibling `dotnetlib` conventions).
 
 ## Architecture
 - Dependency direction: `App -> Core`. Never the reverse.
-- `FreeGameScout.Core` stays platform-neutral (`net10.0`, no WPF/WinForms). All Windows-specific
-  code (UI, tray, registry) lives in `FreeGameScout.App`.
+- `GameScout.Core` stays platform-neutral (`net10.0`, no WPF/WinForms). All Windows-specific
+  code (UI, tray, registry) lives in `GameScout.App`.
 - Giveaway sources depend on `IHttpTextClient`, never on a concrete `HttpClient`, so they stay
   unit-testable without the network.
 

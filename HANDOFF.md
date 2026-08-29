@@ -1,4 +1,4 @@
-# HANDOFF — FreeGameScout
+# HANDOFF — GameScout
 
 Snapshot for resuming this project on a different machine. Written 2026-08-29.
 
@@ -7,7 +7,7 @@ The machine this was built on started losing hardware (graphics died). Everythin
 pushed to a **private GitHub repo** so you can `git clone` on another device and keep going with
 zero context loss.
 
-## What FreeGameScout is
+## What GameScout is
 A small **WPF + C# (.NET 10) Windows tray app** that, on launch, checks what games are **free to
 keep right now** (and **coming soon**) on the **Epic Games Store** and **Steam**, shows a quick
 rundown window + a tray balloon, and can register itself to **run at Windows startup**. You glance
@@ -19,23 +19,23 @@ It was built to follow the architecture conventions in the sibling `dotnetlib` r
 semantic theme keys with light + dark, and a test project per production layer.
 
 ## Current status — WORKING ✅
-- `dotnet build FreeGameScout.slnx -c Release` → **0 warnings, 0 errors**
-- `dotnet test FreeGameScout.slnx -c Release` → **13/13 passing**
+- `dotnet build GameScout.slnx -c Release` → **0 warnings, 0 errors**
+- `dotnet test GameScout.slnx -c Release` → **13/13 passing**
 - The app compiles and runs; it has **not yet been launched interactively** on real hardware
   (the machine failed before a manual smoke test). See "First thing to do on the new machine".
 
 ## How to resume (new machine)
 1. Install the **.NET 10 SDK** (pinned to `10.0.102` in `global.json`, `rollForward: latestFeature`).
    This is a **Windows-only** app (WPF + WinForms tray) — build/run on Windows.
-2. `git clone <your private repo URL>` then `cd FreeGameScout`.
+2. `git clone <your private repo URL>` then `cd GameScout`.
 3. Build + test:
    ```bash
-   dotnet build FreeGameScout.slnx -c Release
-   dotnet test FreeGameScout.slnx -c Release
+   dotnet build GameScout.slnx -c Release
+   dotnet test GameScout.slnx -c Release
    ```
 4. Run the app:
    ```bash
-   dotnet run --project src/FreeGameScout.App
+   dotnet run --project src/GameScout.App
    ```
    A window should appear, scan Epic + Steam, and list free games. A tray icon appears in the
    notification area. Pass `--tray` to start hidden (this is what the startup entry uses).
@@ -45,16 +45,16 @@ semantic theme keys with light + dark, and a test project per production layer.
 - Launch and confirm the window populates with real free games (needs internet).
 - Toggle **Theme** (light/dark) and confirm colors swap.
 - Toggle **Run at startup**, then check the registry value exists:
-  `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` → value name `FreeGameScout`.
+  `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` → value name `GameScout`.
   Untoggle and confirm it's removed. (Uses HKCU only — no admin needed.)
 - Close the window → app should hide to tray, not exit. Tray → **Exit** quits fully.
 - Double-click a game card → opens its store/claim page in the browser.
 
 ## Architecture (dependency direction: App → Core)
 ```
-src/FreeGameScout.Core   (net10.0, NO WPF)   domain model, sources, aggregator, MVVM base
-src/FreeGameScout.App    (net10.0-windows)   WPF UI, tray, startup registration, theming
-tests/FreeGameScout.Core.Tests (net10.0)     xUnit, deterministic (no network)
+src/GameScout.Core   (net10.0, NO WPF)   domain model, sources, aggregator, MVVM base
+src/GameScout.App    (net10.0-windows)   WPF UI, tray, startup registration, theming
+tests/GameScout.Core.Tests (net10.0)     xUnit, deterministic (no network)
 ```
 
 ### Core pieces
@@ -89,7 +89,7 @@ tests/FreeGameScout.Core.Tests (net10.0)     xUnit, deterministic (no network)
 - **GamerPower (Steam):** `https://www.gamerpower.com/api/giveaways?platform=steam&type=game`
 
 Both were live-verified during the build; the parsers were written against **real** responses and
-the test fixtures in `tests/FreeGameScout.Core.Tests/Samples/` are trimmed real payloads.
+the test fixtures in `tests/GameScout.Core.Tests/Samples/` are trimmed real payloads.
 
 ## Known gaps / next slices (see TODO.md for the full list)
 - No manual/interactive smoke test yet (do this first — see above).
@@ -101,7 +101,7 @@ the test fixtures in `tests/FreeGameScout.Core.Tests/Samples/` are trimmed real 
 
 ## Verification baseline (run before committing)
 ```bash
-dotnet build FreeGameScout.slnx -c Release
-dotnet test  FreeGameScout.slnx -c Release
+dotnet build GameScout.slnx -c Release
+dotnet test  GameScout.slnx -c Release
 ```
 (A `dotnet format` / analyzer pass also runs in CI — see `.github/workflows/ci.yml`.)

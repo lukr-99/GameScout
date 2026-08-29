@@ -3,12 +3,12 @@
 Repository layout and dependency intent.
 
 ```text
-FreeGameScout/
+GameScout/
 |- .github/
 |  |- workflows/
 |     |- ci.yml
 |- src/
-|  |- FreeGameScout.Core/                (net10.0, platform-neutral, no WPF)
+|  |- GameScout.Core/                (net10.0, platform-neutral, no WPF)
 |  |  |- Abstractions/
 |  |  |  |- IGiveawaySource.cs
 |  |  |  |- IHttpTextClient.cs
@@ -31,7 +31,7 @@ FreeGameScout/
 |  |     |- GamerPower/
 |  |        |- GamerPowerSource.cs
 |  |        |- GamerPowerGiveawayDto.cs
-|  |- FreeGameScout.App/                  (net10.0-windows, WPF + WinForms tray)
+|  |- GameScout.App/                  (net10.0-windows, WPF + WinForms tray)
 |     |- Converters/
 |     |  |- Converters.cs
 |     |- Services/
@@ -47,13 +47,13 @@ FreeGameScout/
 |     |- MainWindow.xaml (+ .cs)
 |- tests/
 |  |- Directory.Build.props
-|  |- FreeGameScout.Core.Tests/           (net10.0, xUnit)
+|  |- GameScout.Core.Tests/           (net10.0, xUnit)
 |     |- Aggregation/
 |     |- Sources/
 |     |- Samples/                         (trimmed real API payloads)
 |     |- TestSupport/
 |- Directory.Build.props
-|- FreeGameScout.slnx
+|- GameScout.slnx
 |- global.json
 |- AGENTS.md / RULES.md / STRUCTURE.md
 |- README.md / HANDOFF.md
@@ -62,11 +62,11 @@ FreeGameScout/
 
 ## Dependency graph
 ```text
-FreeGameScout.App
-  |- FreeGameScout.Core
+GameScout.App
+  |- GameScout.Core
 
-FreeGameScout.Core.Tests
-  |- FreeGameScout.Core
+GameScout.Core.Tests
+  |- GameScout.Core
 ```
 
 `Core` never references the app or any WPF assembly. The app is the only Windows-specific project.

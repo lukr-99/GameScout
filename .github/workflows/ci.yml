@@ -18,13 +18,13 @@ jobs:
           global-json-file: global.json
 
       - name: Restore
-        run: dotnet restore FreeGameScout.slnx
+        run: dotnet restore GameScout.slnx
 
       - name: Format check
-        run: dotnet format FreeGameScout.slnx --verify-no-changes --severity warn
+        run: dotnet format GameScout.slnx --verify-no-changes --severity warn
 
       - name: Build
-        run: dotnet build FreeGameScout.slnx -c Release --no-restore
+        run: dotnet build GameScout.slnx -c Release --no-restore
 
       - name: Test
-        run: dotnet test FreeGameScout.slnx -c Release --no-build
+        run: dotnet test GameScout.slnx -c Release --no-build

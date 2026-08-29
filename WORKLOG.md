@@ -10,7 +10,7 @@
   + public `BuildEndpoint(locale, country)`; store links are localized. `Parse(json, locale)` overload.
   Added 2 tests (endpoint build, localized URL). App still uses en-US/US defaults.
 - **Scan logging:** new `App/Services/ScanLog.cs` writes best-effort lines to
-  `%LOCALAPPDATA%\FreeGameScout\scout.log` on startup and after every scan, so a first run on a new
+  `%LOCALAPPDATA%\GameScout\scout.log` on startup and after every scan, so a first run on a new
   machine is diagnosable without watching the UI.
 - Build: 0/0. Tests: **15/15** passing.
 

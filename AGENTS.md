@@ -1,6 +1,6 @@
 # AGENTS
 
-Guidance for coding agents working on FreeGameScout.
+Guidance for coding agents working on GameScout.
 
 ## Orientation
 - Read `HANDOFF.md` first, then `RULES.md` and `STRUCTURE.md`.
@@ -9,8 +9,8 @@ Guidance for coding agents working on FreeGameScout.
 
 ## Verification baseline
 Run before committing:
-1. `dotnet build FreeGameScout.slnx -c Release`
-2. `dotnet test FreeGameScout.slnx -c Release`
+1. `dotnet build GameScout.slnx -c Release`
+2. `dotnet test GameScout.slnx -c Release`
 
 Both must be clean (0 warnings — warnings are errors) and green (all tests pass).
 
@@ -19,7 +19,7 @@ Both must be clean (0 warnings — warnings are errors) and green (all tests pas
   nullable enabled, `sealed` by default, XML docs on public APIs.
 - New giveaway sources implement `IGiveawaySource`, depend on `IHttpTextClient`, expose a pure
   `static Parse(string)` and add a fixture-backed test under `tests/.../Sources/`.
-- Windows-only code stays in `FreeGameScout.App`.
+- Windows-only code stays in `GameScout.App`.
 
 ## Documentation discipline
 - Append meaningful work to `WORKLOG.md`.

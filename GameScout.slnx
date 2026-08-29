@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GameScout.Core/GameScout.Core.csproj" />
+    <Project Path="src/GameScout.App/GameScout.App.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/GameScout.Core.Tests/GameScout.Core.Tests.csproj" />
+  </Folder>
+</Solution>
