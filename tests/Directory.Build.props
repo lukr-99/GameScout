@@ -1,0 +1,9 @@
+<Project>
+  <!-- Import the root props so shared settings (EnableWindowsTargeting, analysis level) apply. -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!-- Allow the Arrange_Act_Assert underscore naming convention in test method names. -->
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CA1707</NoWarn>
+  </PropertyGroup>
+</Project>

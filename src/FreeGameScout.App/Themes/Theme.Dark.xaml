@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Semantic surface + text tokens (dark). Same keys as Theme.Light so control templates
+         never need rewriting to switch modes. -->
+    <SolidColorBrush x:Key="Surface.Window" Color="#15181E" />
+    <SolidColorBrush x:Key="Surface.Card" Color="#1E232B" />
+    <SolidColorBrush x:Key="Surface.CardHover" Color="#28303A" />
+
+    <SolidColorBrush x:Key="Text.Primary" Color="#F2F4F8" />
+    <SolidColorBrush x:Key="Text.Secondary" Color="#B7C0CD" />
+    <SolidColorBrush x:Key="Text.Muted" Color="#75808F" />
+
+    <SolidColorBrush x:Key="Accent" Color="#5B86F5" />
+    <SolidColorBrush x:Key="Accent.Foreground" Color="#0E1116" />
+
+    <SolidColorBrush x:Key="Border.Subtle" Color="#2C333D" />
+
+    <!-- Store badge colors (shared across themes). -->
+    <SolidColorBrush x:Key="Badge.Epic" Color="#0A0A0A" />
+    <SolidColorBrush x:Key="Badge.Steam" Color="#2A93D5" />
+    <SolidColorBrush x:Key="Badge.Gog" Color="#9A63F5" />
+    <SolidColorBrush x:Key="Badge.Other" Color="#6B7686" />
+    <SolidColorBrush x:Key="Badge.Foreground" Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="Accent.Soft" Color="#22304F" />
+
+</ResourceDictionary>

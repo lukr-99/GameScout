@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FreeGameScout.Core/FreeGameScout.Core.csproj" />
+    <Project Path="src/FreeGameScout.App/FreeGameScout.App.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FreeGameScout.Core.Tests/FreeGameScout.Core.Tests.csproj" />
+  </Folder>
+</Solution>

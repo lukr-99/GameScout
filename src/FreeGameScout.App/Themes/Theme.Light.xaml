@@ -1,0 +1,27 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Semantic surface + text tokens (light). Controls consume these via DynamicResource. -->
+    <SolidColorBrush x:Key="Surface.Window" Color="#F4F5F7" />
+    <SolidColorBrush x:Key="Surface.Card" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="Surface.CardHover" Color="#EEF1F6" />
+
+    <SolidColorBrush x:Key="Text.Primary" Color="#1B1F27" />
+    <SolidColorBrush x:Key="Text.Secondary" Color="#4A515E" />
+    <SolidColorBrush x:Key="Text.Muted" Color="#8A93A2" />
+
+    <SolidColorBrush x:Key="Accent" Color="#3D6FF2" />
+    <SolidColorBrush x:Key="Accent.Foreground" Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="Border.Subtle" Color="#E1E4EA" />
+
+    <!-- Store badge colors (shared across themes). -->
+    <SolidColorBrush x:Key="Badge.Epic" Color="#2A2A2A" />
+    <SolidColorBrush x:Key="Badge.Steam" Color="#1B6FA8" />
+    <SolidColorBrush x:Key="Badge.Gog" Color="#7B3FF2" />
+    <SolidColorBrush x:Key="Badge.Other" Color="#5A6472" />
+    <SolidColorBrush x:Key="Badge.Foreground" Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="Accent.Soft" Color="#E4ECFD" />
+
+</ResourceDictionary>

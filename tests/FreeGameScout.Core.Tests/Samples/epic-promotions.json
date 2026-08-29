@@ -1,0 +1,251 @@
+{
+  "data": {
+    "Catalog": {
+      "searchStore": {
+        "elements": [
+          {
+            "title": "Breathedge",
+            "id": "8401414902e84f2cb9afa9142f051d32",
+            "namespace": "08ae29e4f70a4b62aa055e383381aa82",
+            "offerType": "BASE_GAME",
+            "productSlug": "breathedge",
+            "urlSlug": "osmiumgeneralaudience",
+            "offerMappings": [
+              {
+                "pageSlug": "breathedge",
+                "pageType": "productHome"
+              }
+            ],
+            "catalogNs": {
+              "mappings": [
+                {
+                  "pageSlug": "breathedge",
+                  "pageType": "productHome"
+                }
+              ]
+            },
+            "price": {
+              "totalPrice": {
+                "discountPrice": 0,
+                "originalPrice": 2499,
+                "voucherDiscount": 0,
+                "discount": 2499,
+                "currencyCode": "USD",
+                "currencyInfo": {
+                  "decimals": 2
+                },
+                "fmtPrice": {
+                  "originalPrice": "$24.99",
+                  "discountPrice": "0",
+                  "intermediatePrice": "0"
+                },
+                "dualPrice": null
+              }
+            },
+            "promotions": {
+              "promotionalOffers": [
+                {
+                  "promotionalOffers": [
+                    {
+                      "startDate": "2026-08-27T15:00:00.000Z",
+                      "endDate": "2026-09-03T15:00:00.000Z",
+                      "discountSetting": {
+                        "discountType": "PERCENTAGE",
+                        "discountPercentage": 0
+                      }
+                    }
+                  ]
+                }
+              ],
+              "upcomingPromotionalOffers": [
+                {
+                  "promotionalOffers": [
+                    {
+                      "startDate": "2026-09-03T15:00:00.000Z",
+                      "endDate": "2026-09-17T15:00:00.000Z",
+                      "discountSetting": {
+                        "discountType": "PERCENTAGE",
+                        "discountPercentage": 25
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "title": "Ghostrunner 2",
+            "id": "be5600439b434624802764f704755cde",
+            "namespace": "708f57aaa04b42ef885be16c8288f0ac",
+            "offerType": "BASE_GAME",
+            "productSlug": "ghostrunner-2",
+            "urlSlug": "ghostrunner-2",
+            "offerMappings": [
+              {
+                "pageSlug": "ghostrunner-2",
+                "pageType": "productHome"
+              }
+            ],
+            "catalogNs": {
+              "mappings": [
+                {
+                  "pageSlug": "ghostrunner-2",
+                  "pageType": "productHome"
+                }
+              ]
+            },
+            "price": {
+              "totalPrice": {
+                "discountPrice": 3999,
+                "originalPrice": 3999,
+                "voucherDiscount": 0,
+                "discount": 0,
+                "currencyCode": "USD",
+                "currencyInfo": {
+                  "decimals": 2
+                },
+                "fmtPrice": {
+                  "originalPrice": "$39.99",
+                  "discountPrice": "$39.99",
+                  "intermediatePrice": "$39.99"
+                },
+                "dualPrice": null
+              }
+            },
+            "promotions": {
+              "promotionalOffers": [],
+              "upcomingPromotionalOffers": [
+                {
+                  "promotionalOffers": [
+                    {
+                      "startDate": "2026-09-10T17:00:00.000Z",
+                      "endDate": "2026-09-24T17:00:00.000Z",
+                      "discountSetting": {
+                        "discountType": "PERCENTAGE",
+                        "discountPercentage": 20
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "title": "Rival Stars Horse Racing : Desktop Edition",
+            "id": "8f1fcf01e32e4fd4b2ae0a9737992760",
+            "namespace": "f570d80aa4fe463ca53c4410d1c75e1e",
+            "offerType": "BASE_GAME",
+            "productSlug": null,
+            "urlSlug": "c27af3c6ec3a47afb720e580138de63e",
+            "offerMappings": [
+              {
+                "pageSlug": "rival-stars-horse-racing-dd09de",
+                "pageType": "productHome"
+              }
+            ],
+            "catalogNs": {
+              "mappings": [
+                {
+                  "pageSlug": "rival-stars-horse-racing-dd09de",
+                  "pageType": "productHome"
+                }
+              ]
+            },
+            "price": {
+              "totalPrice": {
+                "discountPrice": 0,
+                "originalPrice": 2499,
+                "voucherDiscount": 0,
+                "discount": 2499,
+                "currencyCode": "USD",
+                "currencyInfo": {
+                  "decimals": 2
+                },
+                "fmtPrice": {
+                  "originalPrice": "$24.99",
+                  "discountPrice": "0",
+                  "intermediatePrice": "0"
+                },
+                "dualPrice": null
+              }
+            },
+            "promotions": {
+              "promotionalOffers": [
+                {
+                  "promotionalOffers": [
+                    {
+                      "startDate": "2026-08-27T15:00:00.000Z",
+                      "endDate": "2026-09-03T15:00:00.000Z",
+                      "discountSetting": {
+                        "discountType": "PERCENTAGE",
+                        "discountPercentage": 0
+                      }
+                    }
+                  ]
+                }
+              ],
+              "upcomingPromotionalOffers": []
+            }
+          },
+          {
+            "title": "Alone With You",
+            "id": "b8cc76ce7d6645f0a282b843a072cc78",
+            "namespace": "cb87ac984c3c4c19b0a4e3e89048f187",
+            "offerType": "BASE_GAME",
+            "productSlug": null,
+            "urlSlug": "68a0e4e0a68d42ffba405593a89c55ba",
+            "offerMappings": [
+              {
+                "pageSlug": "alone-with-you-028a15",
+                "pageType": "productHome"
+              }
+            ],
+            "catalogNs": {
+              "mappings": [
+                {
+                  "pageSlug": "alone-with-you-028a15",
+                  "pageType": "productHome"
+                }
+              ]
+            },
+            "price": {
+              "totalPrice": {
+                "discountPrice": 999,
+                "originalPrice": 999,
+                "voucherDiscount": 0,
+                "discount": 0,
+                "currencyCode": "USD",
+                "currencyInfo": {
+                  "decimals": 2
+                },
+                "fmtPrice": {
+                  "originalPrice": "$9.99",
+                  "discountPrice": "$9.99",
+                  "intermediatePrice": "$9.99"
+                },
+                "dualPrice": null
+              }
+            },
+            "promotions": {
+              "promotionalOffers": [],
+              "upcomingPromotionalOffers": [
+                {
+                  "promotionalOffers": [
+                    {
+                      "startDate": "2026-09-03T15:00:00.000Z",
+                      "endDate": "2026-09-10T15:00:00.000Z",
+                      "discountSetting": {
+                        "discountType": "PERCENTAGE",
+                        "discountPercentage": 0
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

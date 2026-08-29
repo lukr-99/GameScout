@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- WinForms is enabled only for the tray NotifyIcon; all UI is WPF. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>FreeGameScout</AssemblyName>
+    <RootNamespace>FreeGameScout.App</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FreeGameScout.Core\FreeGameScout.Core.csproj" />
+  </ItemGroup>
+
+</Project>
