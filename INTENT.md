@@ -6,15 +6,16 @@ are currently free (and coming soon) on Epic and Steam, with a run-at-startup to
 themes. Architecture mirrors the `dotnetlib` conventions (platform-neutral tested `Core`, MVVM,
 semantic theming).
 
-## Where things stand (2026-08-29)
+## Where things stand (2026-08-29, session 2)
 - Core domain + Epic source + GamerPower(Steam) source + parallel aggregator: **done, tested**.
-- WPF app (window, tray, startup registration, theming, converters): **done, builds clean**.
-- Build: 0 warnings / 0 errors. Tests: 13/13 passing.
-- **Not yet manually smoke-tested** on real hardware (dev machine hardware failed). This is the
-  first task on the next device — see `HANDOFF.md`.
+- WPF app (window, tray, startup registration, theming, converters, scan logging): **done, builds clean**.
+- Build: 0 warnings / 0 errors. Tests: **15/15** passing.
+- **Data pipeline smoke-tested live** on real hardware via a headless `--tray` run (3 free + 1
+  upcoming, no errors — see `scout.log`). The **WPF window rendering** is the only piece not yet
+  eyeballed (needs a real display).
 
 ## Next steps
-1. Manual smoke test on the new machine (window populates, theme swap, startup toggle, tray/exit,
-   open-in-browser). See HANDOFF.md checklist.
-2. Address any runtime issues found (Epic UA/locale, tray balloon timing).
-3. Optional polish: real app icon, configurable locale/country, periodic re-scan, more sources.
+1. Visual smoke test on a machine with a display: confirm the window/cards render correctly, theme
+   toggle works, startup toggle writes/removes the registry value, close→tray + tray Exit behave.
+2. Optional polish: real app icon, "Open log" tray item, settings UI for locale/country, periodic
+   re-scan, more sources (direct Steam / GOG).

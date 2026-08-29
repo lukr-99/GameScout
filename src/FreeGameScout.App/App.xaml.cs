@@ -23,6 +23,7 @@ public partial class App : Application, IDisposable
     private NotifyIcon? _tray;
     private MainWindow? _window;
     private MainWindowViewModel? _viewModel;
+    private ScanLog? _log;
     private bool _exiting;
 
     /// <inheritdoc/>
@@ -32,6 +33,9 @@ public partial class App : Application, IDisposable
 
         bool startInTray = e.Args.Any(a =>
             a.Equals(StartupRegistration.StartupArgument, StringComparison.OrdinalIgnoreCase));
+
+        _log = new ScanLog();
+        _log.Info($"app started ({(startInTray ? "tray" : "window")} mode)");
 
         _http = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
         _http.DefaultRequestHeaders.UserAgent.ParseAdd("FreeGameScout/0.1 (+https://github.com/lukr-99)");
@@ -143,6 +147,8 @@ public partial class App : Application, IDisposable
 
     private void OnScanCompleted(FreeGameReport report)
     {
+        _log?.Record(report);
+
         if (_tray is null)
             return;
 

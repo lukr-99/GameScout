@@ -3,7 +3,11 @@
 Actionable next slices. Check off as delivered.
 
 ## Do first (on the new machine)
-- [ ] **Manual smoke test** — launch, confirm the list populates from live Epic + Steam data.
+- [x] **Data-pipeline smoke test** — verified end-to-end via a live headless run: both sources hit
+      real APIs, aggregator merged 3 free + 1 upcoming, no errors. See the scan log at
+      `%LOCALAPPDATA%\FreeGameScout\scout.log`.
+- [ ] **Visual smoke test (still pending — needs a real display):** confirm the window renders and
+      the cards look right. Everything behind the UI is proven; only pixels are unverified.
 - [ ] Verify **theme toggle** swaps light/dark correctly at runtime.
 - [ ] Verify **Run at startup** writes/removes `HKCU\...\Run\FreeGameScout`, and that the
       `--tray` launch comes up hidden with a balloon.
@@ -11,7 +15,9 @@ Actionable next slices. Check off as delivered.
 
 ## Near term
 - [ ] Add a real application icon (`.ico`) and use it for the window + tray instead of the system icon.
-- [ ] Make Epic locale/country configurable (currently hard-coded en-US/US).
+- [x] Make Epic locale/country configurable (`EpicFreeGamesSource(http, locale, country)` +
+      `BuildEndpoint`). Still wired with en-US/US defaults in `App`; expose a settings UI later.
+- [ ] Surface the scan log path in the UI (e.g. a tray menu item "Open log") for easy troubleshooting.
 - [ ] Handle the "no internet" case with a friendlier inline message (aggregator already degrades,
       but confirm the UX).
 

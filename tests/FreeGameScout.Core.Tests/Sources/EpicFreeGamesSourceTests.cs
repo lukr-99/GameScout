@@ -54,4 +54,23 @@ public sealed class EpicFreeGamesSourceTests
 
         Assert.Empty(games);
     }
+
+    [Fact]
+    public void BuildEndpoint_UsesGivenLocaleAndCountry()
+    {
+        string endpoint = EpicFreeGamesSource.BuildEndpoint("de-DE", "DE");
+
+        Assert.Contains("locale=de-DE", endpoint, StringComparison.Ordinal);
+        Assert.Contains("country=DE", endpoint, StringComparison.Ordinal);
+        Assert.Contains("allowCountries=DE", endpoint, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Parse_WithLocale_BuildsLocalizedStoreUrl()
+    {
+        IReadOnlyList<FreeGame> games = EpicFreeGamesSource.Parse(Samples.EpicPromotions(), "de-DE");
+
+        FreeGame breathedge = games.Single(g => g.Title == "Breathedge");
+        Assert.Equal("https://store.epicgames.com/de-DE/p/breathedge", breathedge.Url);
+    }
 }

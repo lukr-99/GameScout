@@ -11,12 +11,17 @@ namespace FreeGameScout.Core.Sources.Epic;
 /// </summary>
 public sealed class EpicFreeGamesSource : IGiveawaySource
 {
-    /// <summary>The public, unauthenticated promotions endpoint.</summary>
-    public const string DefaultEndpoint =
-        "https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions" +
-        "?locale=en-US&country=US&allowCountries=US";
+    /// <summary>Default locale used for the feed query and store links.</summary>
+    public const string DefaultLocale = "en-US";
 
-    private const string StoreBaseUrl = "https://store.epicgames.com/en-US/p/";
+    /// <summary>Default country used to scope the promotions query.</summary>
+    public const string DefaultCountry = "US";
+
+    private const string PromotionsBaseUrl =
+        "https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions";
+
+    /// <summary>The public, unauthenticated promotions endpoint for the default locale/country.</summary>
+    public static string DefaultEndpoint => BuildEndpoint(DefaultLocale, DefaultCountry);
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -25,24 +30,45 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
 
     private readonly IHttpTextClient _http;
     private readonly string _endpoint;
+    private readonly string _locale;
 
     /// <summary>Initializes a new <see cref="EpicFreeGamesSource"/>.</summary>
     /// <param name="http">Transport used to fetch the feed.</param>
-    /// <param name="endpoint">Feed URL; defaults to <see cref="DefaultEndpoint"/>.</param>
-    public EpicFreeGamesSource(IHttpTextClient http, string? endpoint = null)
+    /// <param name="locale">Locale for the query and store links (e.g. "en-US", "de-DE").</param>
+    /// <param name="country">Country code scoping the promotions query (e.g. "US", "DE").</param>
+    /// <param name="endpointOverride">Full feed URL override; when set, <paramref name="country"/> is ignored.</param>
+    public EpicFreeGamesSource(
+        IHttpTextClient http,
+        string locale = DefaultLocale,
+        string country = DefaultCountry,
+        string? endpointOverride = null)
     {
         _http = http ?? throw new ArgumentNullException(nameof(http));
-        _endpoint = endpoint ?? DefaultEndpoint;
+        _locale = string.IsNullOrWhiteSpace(locale) ? DefaultLocale : locale;
+        _endpoint = endpointOverride ?? BuildEndpoint(_locale, country);
     }
 
     /// <inheritdoc/>
     public string Name => "Epic Games Store";
 
+    /// <summary>Builds the promotions endpoint URL for a given locale and country.</summary>
+    /// <param name="locale">Locale code (e.g. "en-US").</param>
+    /// <param name="country">Country code (e.g. "US").</param>
+    /// <returns>The fully-qualified query URL.</returns>
+    public static string BuildEndpoint(string locale, string country)
+    {
+        string safeLocale = string.IsNullOrWhiteSpace(locale) ? DefaultLocale : locale;
+        string safeCountry = string.IsNullOrWhiteSpace(country) ? DefaultCountry : country;
+        return $"{PromotionsBaseUrl}?locale={Uri.EscapeDataString(safeLocale)}" +
+               $"&country={Uri.EscapeDataString(safeCountry)}" +
+               $"&allowCountries={Uri.EscapeDataString(safeCountry)}";
+    }
+
     /// <inheritdoc/>
     public async Task<IReadOnlyList<FreeGame>> GetFreeGamesAsync(CancellationToken cancellationToken = default)
     {
         string json = await _http.GetStringAsync(_endpoint, cancellationToken).ConfigureAwait(false);
-        return Parse(json);
+        return Parse(json, _locale);
     }
 
     /// <summary>
@@ -50,8 +76,9 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
     /// mapping can be verified against a fixed sample without any network access.
     /// </summary>
     /// <param name="json">The raw JSON body from the promotions endpoint.</param>
+    /// <param name="locale">Locale used to build store links; defaults to <see cref="DefaultLocale"/>.</param>
     /// <returns>The free and upcoming-free offers found in the payload.</returns>
-    public static IReadOnlyList<FreeGame> Parse(string json)
+    public static IReadOnlyList<FreeGame> Parse(string json, string locale = DefaultLocale)
     {
         EpicPromotionsDto? dto = JsonSerializer.Deserialize<EpicPromotionsDto>(json, JsonOptions);
         IReadOnlyList<EpicElementDto>? elements = dto?.Data?.Catalog?.SearchStore?.Elements;
@@ -65,9 +92,9 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
             if ((element.Price?.TotalPrice?.OriginalPrice ?? 0) <= 0)
                 continue;
 
-            if (TryMap(element, element.Promotions?.PromotionalOffers, GiveawayKind.CurrentlyFree, out FreeGame? current))
+            if (TryMap(element, element.Promotions?.PromotionalOffers, GiveawayKind.CurrentlyFree, locale, out FreeGame? current))
                 games.Add(current!);
-            else if (TryMap(element, element.Promotions?.UpcomingPromotionalOffers, GiveawayKind.Upcoming, out FreeGame? upcoming))
+            else if (TryMap(element, element.Promotions?.UpcomingPromotionalOffers, GiveawayKind.Upcoming, locale, out FreeGame? upcoming))
                 games.Add(upcoming!);
         }
 
@@ -78,6 +105,7 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
         EpicElementDto element,
         IReadOnlyList<EpicOfferGroupDto>? groups,
         GiveawayKind kind,
+        string locale,
         out FreeGame? game)
     {
         game = null;
@@ -98,7 +126,7 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
                     Title: element.Title ?? "(untitled)",
                     Store: GameStore.Epic,
                     Kind: kind,
-                    Url: BuildUrl(element),
+                    Url: BuildUrl(element, locale),
                     NormalPrice: element.Price?.TotalPrice?.FmtPrice?.OriginalPrice,
                     StartsUtc: offer.StartDate,
                     EndsUtc: offer.EndDate);
@@ -109,10 +137,10 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
         return false;
     }
 
-    private static string? BuildUrl(EpicElementDto element)
+    private static string? BuildUrl(EpicElementDto element, string locale)
     {
         string? slug = FirstUsableSlug(element);
-        return slug is null ? null : StoreBaseUrl + slug;
+        return slug is null ? null : $"https://store.epicgames.com/{locale}/p/{slug}";
     }
 
     private static string? FirstUsableSlug(EpicElementDto element)
