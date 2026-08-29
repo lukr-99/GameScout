@@ -1,0 +1,6 @@
+# Normalize line endings: check in as LF, check out native on Windows.
+* text=auto
+
+# Binary assets must never be normalized.
+*.ico binary
+*.png binary

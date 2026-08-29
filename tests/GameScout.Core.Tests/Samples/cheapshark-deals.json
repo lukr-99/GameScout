@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Suicide Squad: Kill the Justice League",
+    "dealID": "nF9%2FdPXYPajMwowT9vhxtb%2BbzqK%2FsuFSBFt5snmLx24%3D",
+    "storeID": "30",
+    "salePrice": "3.08",
+    "normalPrice": "69.99",
+    "savings": "95.599371",
+    "steamAppID": "315210",
+    "thumb": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/315210/capsule_231x87.jpg?t=1777940046"
+  },
+  {
+    "title": "Suicide Squad: Kill the Justice League",
+    "dealID": "cefZQLjvGKTOXshTaqdtyKvglsechNWY4drsxnQSGDc%3D",
+    "storeID": "1",
+    "salePrice": "3.43",
+    "normalPrice": "69.99",
+    "savings": "80.0",
+    "steamAppID": "315210",
+    "thumb": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/315210/capsule_231x87.jpg?t=1777940046"
+  },
+  {
+    "title": "Cool Indie RPG",
+    "dealID": "ABC123",
+    "storeID": "7",
+    "salePrice": "4.99",
+    "normalPrice": "19.99",
+    "savings": "75.0",
+    "steamAppID": "0",
+    "thumb": "https://img/thumb.jpg"
+  }
+]

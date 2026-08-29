@@ -25,4 +25,8 @@
 
     <SolidColorBrush x:Key="Accent.Soft" Color="#22304F" />
 
+    <!-- Discount pill (deals tab). -->
+    <SolidColorBrush x:Key="Discount" Color="#35C77E" />
+    <SolidColorBrush x:Key="Discount.Foreground" Color="#0E1116" />
+
 </ResourceDictionary>

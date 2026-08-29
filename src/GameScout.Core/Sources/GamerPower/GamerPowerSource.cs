@@ -6,15 +6,16 @@ using GameScout.Core.Games;
 namespace GameScout.Core.Sources.GamerPower;
 
 /// <summary>
-/// Reads the public GamerPower giveaways feed to surface "normally paid, currently free"
-/// keys on Steam. Free-to-play titles (no real list price) are filtered out so the report
-/// only shows genuine give-away-a-paid-game offers.
+/// Reads the public GamerPower giveaways feed to surface "normally paid, currently free" games
+/// across many storefronts (Steam, GOG, Prime Gaming, itch.io, ...). Free-to-play titles (no real
+/// list price) are dropped, and Epic entries are skipped because the dedicated Epic source is
+/// authoritative for them.
 /// </summary>
 public sealed class GamerPowerSource : IGiveawaySource
 {
-    /// <summary>Steam full-game giveaways, most recent first.</summary>
-    public const string SteamGamesEndpoint =
-        "https://www.gamerpower.com/api/giveaways?platform=steam&type=game";
+    /// <summary>All full-game giveaways across platforms, most recent first.</summary>
+    public const string AllGamesEndpoint =
+        "https://www.gamerpower.com/api/giveaways?type=game";
 
     // GamerPower stamps dates as "yyyy-MM-dd HH:mm:ss" in UTC.
     private const string EndDateFormat = "yyyy-MM-dd HH:mm:ss";
@@ -24,15 +25,15 @@ public sealed class GamerPowerSource : IGiveawaySource
 
     /// <summary>Initializes a new <see cref="GamerPowerSource"/>.</summary>
     /// <param name="http">Transport used to fetch the feed.</param>
-    /// <param name="endpoint">Feed URL; defaults to <see cref="SteamGamesEndpoint"/>.</param>
+    /// <param name="endpoint">Feed URL; defaults to <see cref="AllGamesEndpoint"/>.</param>
     public GamerPowerSource(IHttpTextClient http, string? endpoint = null)
     {
         _http = http ?? throw new ArgumentNullException(nameof(http));
-        _endpoint = endpoint ?? SteamGamesEndpoint;
+        _endpoint = endpoint ?? AllGamesEndpoint;
     }
 
     /// <inheritdoc/>
-    public string Name => "GamerPower (Steam)";
+    public string Name => "GamerPower";
 
     /// <inheritdoc/>
     public async Task<IReadOnlyList<FreeGame>> GetFreeGamesAsync(CancellationToken cancellationToken = default)
@@ -45,7 +46,7 @@ public sealed class GamerPowerSource : IGiveawaySource
     /// Parses a raw GamerPower giveaways array into paid-game-now-free offers. Exposed for testing.
     /// </summary>
     /// <param name="json">The raw JSON array from the giveaways endpoint.</param>
-    /// <returns>The offers with a real list price; free-to-play entries are dropped.</returns>
+    /// <returns>Offers with a real list price; free-to-play and Epic entries are dropped.</returns>
     public static IReadOnlyList<FreeGame> Parse(string json)
     {
         List<GamerPowerGiveawayDto>? entries =
@@ -59,14 +60,19 @@ public sealed class GamerPowerSource : IGiveawaySource
             if (string.IsNullOrWhiteSpace(entry.Title) || !HasRealPrice(entry.Worth))
                 continue;
 
+            GameStore store = DetectStore(entry.Platforms);
+            if (store == GameStore.Epic)
+                continue; // The dedicated Epic source is authoritative; avoid duplicates.
+
             games.Add(new FreeGame(
                 Title: CleanTitle(entry.Title),
-                Store: DetectStore(entry.Platforms),
+                Store: store,
                 Kind: GiveawayKind.CurrentlyFree,
                 Url: entry.OpenGiveawayUrl,
                 NormalPrice: entry.Worth,
                 StartsUtc: null,
-                EndsUtc: ParseEndDate(entry.EndDate)));
+                EndsUtc: ParseEndDate(entry.EndDate),
+                ImageUrl: entry.Thumbnail ?? entry.Image));
         }
 
         return games;
@@ -78,7 +84,6 @@ public sealed class GamerPowerSource : IGiveawaySource
             worth.Equals("N/A", StringComparison.OrdinalIgnoreCase))
             return false;
 
-        // Strip currency/formatting and check the amount is above zero.
         string digits = new(worth.Where(c => char.IsDigit(c) || c == '.').ToArray());
         return decimal.TryParse(digits, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal amount)
             && amount > 0m;
@@ -88,12 +93,20 @@ public sealed class GamerPowerSource : IGiveawaySource
     {
         if (string.IsNullOrWhiteSpace(platforms))
             return GameStore.Unknown;
-        if (platforms.Contains("Steam", StringComparison.OrdinalIgnoreCase))
-            return GameStore.Steam;
-        if (platforms.Contains("Epic", StringComparison.OrdinalIgnoreCase))
-            return GameStore.Epic;
-        if (platforms.Contains("GOG", StringComparison.OrdinalIgnoreCase))
-            return GameStore.Gog;
+
+        bool Has(string token) => platforms.Contains(token, StringComparison.OrdinalIgnoreCase);
+
+        if (Has("Steam")) return GameStore.Steam;
+        if (Has("Epic")) return GameStore.Epic;
+        if (Has("GOG")) return GameStore.Gog;
+        if (Has("Prime")) return GameStore.PrimeGaming;
+        if (Has("itch")) return GameStore.Itch;
+        if (Has("Ubisoft") || Has("Uplay")) return GameStore.Ubisoft;
+        if (Has("Origin") || Has("EA ")) return GameStore.Origin;
+        if (Has("Fanatical")) return GameStore.Fanatical;
+        if (Has("IndieGala")) return GameStore.IndieGala;
+        if (Has("Humble")) return GameStore.Humble;
+        if (Has("Xbox") || Has("Microsoft")) return GameStore.Microsoft;
         return GameStore.Other;
     }
 
@@ -113,10 +126,15 @@ public sealed class GamerPowerSource : IGiveawaySource
 
     private static string CleanTitle(string title)
     {
+        // Drop trailing "Giveaway"/"Key Giveaway" noise and any "(Store)" parenthetical.
         string cleaned = title
-            .Replace("(Steam)", string.Empty, StringComparison.OrdinalIgnoreCase)
             .Replace("Key Giveaway", string.Empty, StringComparison.OrdinalIgnoreCase)
             .Replace("Giveaway", string.Empty, StringComparison.OrdinalIgnoreCase);
+
+        int paren = cleaned.IndexOf('(', StringComparison.Ordinal);
+        if (paren > 0)
+            cleaned = cleaned[..paren];
+
         return string.Join(' ', cleaned.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
     }
 }

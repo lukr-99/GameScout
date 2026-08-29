@@ -11,6 +11,12 @@ internal sealed class GamerPowerGiveawayDto
     [JsonPropertyName("worth")]
     public string? Worth { get; init; }
 
+    [JsonPropertyName("thumbnail")]
+    public string? Thumbnail { get; init; }
+
+    [JsonPropertyName("image")]
+    public string? Image { get; init; }
+
     [JsonPropertyName("open_giveaway_url")]
     public string? OpenGiveawayUrl { get; init; }
 

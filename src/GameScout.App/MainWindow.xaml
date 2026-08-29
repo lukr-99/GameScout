@@ -1,100 +1,14 @@
 <Window x:Class="GameScout.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:games="clr-namespace:GameScout.Core.Games;assembly=GameScout.Core"
-        Title="GameScout" Height="640" Width="470"
+        xmlns:views="clr-namespace:GameScout.App.Views"
+        Title="GameScout" Height="680" Width="500"
+        MinHeight="460" MinWidth="420"
         Icon="Assets/gamescout.ico"
-        MinHeight="420" MinWidth="380"
         WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI"
         Background="{DynamicResource Surface.Window}"
         Foreground="{DynamicResource Text.Primary}">
-
-    <Window.Resources>
-
-        <!-- Clickable game card. Chrome is fully templated so hover/theme come from semantic keys. -->
-        <Style x:Key="CardButton" TargetType="Button">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Margin" Value="0,0,0,8" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Card" Background="{DynamicResource Surface.Card}"
-                                BorderBrush="{DynamicResource Border.Subtle}" BorderThickness="1"
-                                CornerRadius="10" Padding="14,12">
-                            <ContentPresenter />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Card" Property="Background" Value="{DynamicResource Surface.CardHover}" />
-                                <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource Accent}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Store badge; background switches per storefront via data triggers. -->
-        <Style x:Key="StoreBadge" TargetType="Border">
-            <Setter Property="CornerRadius" Value="4" />
-            <Setter Property="Padding" Value="6,2" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Background" Value="{DynamicResource Badge.Other}" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Store}" Value="{x:Static games:GameStore.Epic}">
-                    <Setter Property="Background" Value="{DynamicResource Badge.Epic}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Store}" Value="{x:Static games:GameStore.Steam}">
-                    <Setter Property="Background" Value="{DynamicResource Badge.Steam}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Store}" Value="{x:Static games:GameStore.Gog}">
-                    <Setter Property="Background" Value="{DynamicResource Badge.Gog}" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- Shared item layout for one game. -->
-        <DataTemplate x:Key="GameCardTemplate">
-            <Button Style="{StaticResource CardButton}"
-                    Command="{Binding DataContext.OpenGameCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                    CommandParameter="{Binding}"
-                    ToolTip="{Binding Url}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <Border Style="{StaticResource StoreBadge}">
-                                <TextBlock Text="{Binding Store, Converter={StaticResource StoreLabel}}"
-                                           Foreground="{DynamicResource Badge.Foreground}"
-                                           FontSize="10" FontWeight="Bold" />
-                            </Border>
-                            <TextBlock Text="{Binding NormalPrice}" Margin="8,0,0,0"
-                                       VerticalAlignment="Center"
-                                       Foreground="{DynamicResource Text.Muted}"
-                                       FontSize="11"
-                                       Visibility="{Binding NormalPrice, Converter={StaticResource StringToVisibility}}" />
-                        </StackPanel>
-                        <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Text.Primary}" TextWrapping="Wrap" />
-                        <TextBlock Text="{Binding Converter={StaticResource OfferTiming}}"
-                                   Margin="0,3,0,0" FontSize="12"
-                                   Foreground="{DynamicResource Text.Secondary}" />
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="1" Text="&#x3009;" VerticalAlignment="Center"
-                               Margin="8,0,0,0" FontSize="16"
-                               Foreground="{DynamicResource Text.Muted}" />
-                </Grid>
-            </Button>
-        </DataTemplate>
-
-    </Window.Resources>
 
     <Grid Margin="16">
         <Grid.RowDefinitions>
@@ -103,70 +17,38 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,12">
-            <TextBlock Text="{Binding SummaryText}" FontSize="20" FontWeight="Bold"
-                       Foreground="{DynamicResource Text.Primary}" TextWrapping="Wrap" />
-            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                <TextBlock Text="{Binding StatusText}" FontSize="12"
-                           Foreground="{DynamicResource Text.Secondary}" />
-                <TextBlock Text="{Binding LastUpdatedText}" FontSize="12" Margin="8,0,0,0"
-                           Foreground="{DynamicResource Text.Muted}"
-                           Visibility="{Binding LastUpdatedText, Converter={StaticResource StringToVisibility}}" />
+        <!-- Top bar -->
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Column="0" Source="Assets/gamescout.ico" Width="26" Height="26"
+                   VerticalAlignment="Center" Margin="0,0,10,0" />
+            <TextBlock Grid.Column="1" Text="GameScout" FontSize="20" FontWeight="Bold"
+                       VerticalAlignment="Center" Foreground="{DynamicResource Text.Primary}" />
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Content="Theme" Style="{StaticResource GhostButton}" Margin="0,0,8,0"
+                        Command="{Binding ToggleThemeCommand}" />
+                <Button Content="Refresh" Style="{StaticResource PrimaryButton}"
+                        Command="{Binding RefreshAllCommand}" />
             </StackPanel>
+        </Grid>
 
-            <!-- Error banner -->
-            <Border Margin="0,10,0,0" Padding="10,7" CornerRadius="8"
-                    Background="{DynamicResource Accent.Soft}"
-                    Visibility="{Binding HasError, Converter={StaticResource BoolToVisibility}}">
-                <TextBlock Text="{Binding ErrorText}" TextWrapping="Wrap" FontSize="11"
-                           Foreground="{DynamicResource Text.Secondary}" />
-            </Border>
-        </StackPanel>
-
-        <!-- Body -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,4,0">
-            <StackPanel>
-                <!-- Busy indicator -->
-                <TextBlock Text="Scanning…" FontSize="13"
-                           Foreground="{DynamicResource Text.Muted}"
-                           Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
-
-                <!-- Currently free -->
-                <TextBlock Text="FREE NOW" FontSize="11" FontWeight="Bold" Margin="0,0,0,8"
-                           Foreground="{DynamicResource Text.Muted}"
-                           Visibility="{Binding CurrentlyFree.Count, Converter={StaticResource CountToVisibility}}" />
-                <ItemsControl ItemsSource="{Binding CurrentlyFree}"
-                              ItemTemplate="{StaticResource GameCardTemplate}" />
-
-                <!-- Empty state -->
-                <TextBlock Text="No games are free right now. Check back next week!"
-                           FontSize="13" TextWrapping="Wrap" Margin="0,4,0,0"
-                           Foreground="{DynamicResource Text.Secondary}">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsBusy}" Value="False" />
-                                        <Condition Binding="{Binding CurrentlyFree.Count}" Value="0" />
-                                    </MultiDataTrigger.Conditions>
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </MultiDataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-
-                <!-- Upcoming -->
-                <TextBlock Text="COMING SOON" FontSize="11" FontWeight="Bold" Margin="0,16,0,8"
-                           Foreground="{DynamicResource Text.Muted}"
-                           Visibility="{Binding Upcoming.Count, Converter={StaticResource CountToVisibility}}" />
-                <ItemsControl ItemsSource="{Binding Upcoming}"
-                              ItemTemplate="{StaticResource GameCardTemplate}" />
-            </StackPanel>
-        </ScrollViewer>
+        <!-- Tabs -->
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0"
+                    Padding="0,12,0,0"
+                    ItemContainerStyle="{StaticResource ScoutTabItem}">
+            <TabItem Header="Free now">
+                <views:FreeGamesView DataContext="{Binding Free}" Margin="0,4,0,0" />
+            </TabItem>
+            <TabItem Header="On sale">
+                <views:DealsView DataContext="{Binding Deals}" Margin="0,4,0,0" />
+            </TabItem>
+        </TabControl>
 
         <!-- Footer -->
         <Grid Grid.Row="2" Margin="0,14,0,0">
@@ -180,14 +62,8 @@
                       Foreground="{DynamicResource Text.Secondary}"
                       IsChecked="{Binding RunAtStartup, Mode=TwoWay}" />
 
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
-                <Button Content="Theme" Style="{StaticResource GhostButton}" Margin="0,0,8,0"
-                        Command="{Binding ToggleThemeCommand}" />
-                <Button Content="Refresh" Style="{StaticResource GhostButton}" Margin="0,0,8,0"
-                        Command="{Binding RefreshCommand}" />
-                <Button x:Name="HideButton" Content="Hide" Style="{StaticResource PrimaryButton}"
-                        Click="OnHideClick" />
-            </StackPanel>
+            <Button Grid.Column="2" Content="Hide" Style="{StaticResource PrimaryButton}"
+                    Click="OnHideClick" />
         </Grid>
     </Grid>
 </Window>

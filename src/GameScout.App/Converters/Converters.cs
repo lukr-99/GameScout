@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
 using GameScout.Core.Games;
 
 namespace GameScout.App.Converters;
@@ -9,14 +10,38 @@ namespace GameScout.App.Converters;
 public sealed class StoreLabelConverter : IValueConverter
 {
     /// <inheritdoc/>
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) => value switch
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => value is GameStore store ? store.DisplayName().ToUpperInvariant() : "STORE";
+
+    /// <inheritdoc/>
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
+/// <summary>Loads a remote image URL into a <see cref="BitmapImage"/> (async, cached); null when absent.</summary>
+public sealed class ImageUrlToSourceConverter : IValueConverter
+{
+    /// <inheritdoc/>
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        GameStore.Epic => "EPIC",
-        GameStore.Steam => "STEAM",
-        GameStore.Gog => "GOG",
-        GameStore.Other => "STORE",
-        _ => "STORE",
-    };
+        if (value is not string url || string.IsNullOrWhiteSpace(url) ||
+            !Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
+            return null;
+
+        try
+        {
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.UriSource = uri;
+            bitmap.EndInit();
+            return bitmap;
+        }
+        catch (Exception)
+        {
+            return null; // Broken/unreachable image URLs just render as an empty tile.
+        }
+    }
 
     /// <inheritdoc/>
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

@@ -66,6 +66,28 @@ public sealed class EpicFreeGamesSourceTests
     }
 
     [Fact]
+    public void Parse_PicksWideKeyImage()
+    {
+        const string json = """
+        {"data":{"Catalog":{"searchStore":{"elements":[{
+          "title":"Imaged Game",
+          "productSlug":"imaged-game",
+          "price":{"totalPrice":{"originalPrice":1999,"discountPrice":0,"fmtPrice":{"originalPrice":"$19.99"}}},
+          "keyImages":[
+            {"type":"Thumbnail","url":"https://img/thumb.jpg"},
+            {"type":"OfferImageWide","url":"https://img/wide.jpg"}
+          ],
+          "promotions":{"promotionalOffers":[{"promotionalOffers":[
+            {"startDate":"2026-08-27T15:00:00.000Z","endDate":"2026-09-03T15:00:00.000Z","discountSetting":{"discountPercentage":0}}
+          ]}]}
+        }]}}}}
+        """;
+
+        FreeGame game = Assert.Single(EpicFreeGamesSource.Parse(json));
+        Assert.Equal("https://img/wide.jpg", game.ImageUrl);
+    }
+
+    [Fact]
     public void Parse_WithLocale_BuildsLocalizedStoreUrl()
     {
         IReadOnlyList<FreeGame> games = EpicFreeGamesSource.Parse(Samples.EpicPromotions(), "de-DE");

@@ -129,7 +129,8 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
                     Url: BuildUrl(element, locale),
                     NormalPrice: element.Price?.TotalPrice?.FmtPrice?.OriginalPrice,
                     StartsUtc: offer.StartDate,
-                    EndsUtc: offer.EndDate);
+                    EndsUtc: offer.EndDate,
+                    ImageUrl: PickImage(element.KeyImages));
                 return true;
             }
         }
@@ -162,6 +163,22 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
 
     private static string? FirstSlug(IReadOnlyList<EpicSlugMappingDto>? mappings)
         => mappings is { Count: > 0 } ? mappings[0].PageSlug : null;
+
+    private static string? PickImage(IReadOnlyList<EpicKeyImageDto>? images)
+    {
+        if (images is null || images.Count == 0)
+            return null;
+
+        foreach (string preferred in (string[])["OfferImageWide", "DieselStoreFrontWide", "Thumbnail"])
+        {
+            string? match = images.FirstOrDefault(i =>
+                string.Equals(i.Type, preferred, StringComparison.OrdinalIgnoreCase))?.Url;
+            if (!string.IsNullOrWhiteSpace(match))
+                return match;
+        }
+
+        return images[0].Url;
+    }
 
     private static string? Normalize(string? slug)
     {

@@ -8,15 +8,15 @@ namespace GameScout.Core.Aggregation;
 /// single de-duplicated, display-ordered <see cref="FreeGameReport"/>. A failing source degrades
 /// to an error message rather than failing the whole scan.
 /// </summary>
-public sealed class FreeGameAggregator
+public sealed class GiveawayAggregator
 {
     private readonly IReadOnlyList<IGiveawaySource> _sources;
     private readonly TimeProvider _time;
 
-    /// <summary>Initializes a new <see cref="FreeGameAggregator"/>.</summary>
+    /// <summary>Initializes a new <see cref="GiveawayAggregator"/>.</summary>
     /// <param name="sources">The sources to query.</param>
     /// <param name="time">Clock used for relevance filtering; defaults to the system clock.</param>
-    public FreeGameAggregator(IEnumerable<IGiveawaySource> sources, TimeProvider? time = null)
+    public GiveawayAggregator(IEnumerable<IGiveawaySource> sources, TimeProvider? time = null)
     {
         ArgumentNullException.ThrowIfNull(sources);
         _sources = [.. sources];

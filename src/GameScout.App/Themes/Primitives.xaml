@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:games="clr-namespace:GameScout.Core.Games;assembly=GameScout.Core">
 
     <!-- Rounded accent button. Colors come from semantic keys so themes swap cleanly. -->
     <Style x:Key="PrimaryButton" TargetType="Button">
@@ -46,6 +47,75 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Root" Property="Background" Value="{DynamicResource Surface.CardHover}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Clickable game card. Chrome is fully templated so hover/theme come from semantic keys. -->
+    <Style x:Key="CardButton" TargetType="Button">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Card" Background="{DynamicResource Surface.Card}"
+                            BorderBrush="{DynamicResource Border.Subtle}" BorderThickness="1"
+                            CornerRadius="10" Padding="10">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Card" Property="Background" Value="{DynamicResource Surface.CardHover}" />
+                            <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Store badge; background switches per storefront via data triggers. -->
+    <Style x:Key="StoreBadge" TargetType="Border">
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="6,2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="{DynamicResource Badge.Other}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Store}" Value="{x:Static games:GameStore.Epic}">
+                <Setter Property="Background" Value="{DynamicResource Badge.Epic}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Store}" Value="{x:Static games:GameStore.Steam}">
+                <Setter Property="Background" Value="{DynamicResource Badge.Steam}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Store}" Value="{x:Static games:GameStore.Gog}">
+                <Setter Property="Background" Value="{DynamicResource Badge.Gog}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Tab headers styled with semantic colors. -->
+    <Style x:Key="ScoutTabItem" TargetType="TabItem">
+        <Setter Property="Foreground" Value="{DynamicResource Text.Secondary}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="Tab" Padding="14,8" Margin="0,0,4,0" CornerRadius="8"
+                            Background="Transparent">
+                        <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Tab" Property="Background" Value="{DynamicResource Surface.CardHover}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Tab" Property="Background" Value="{DynamicResource Accent.Soft}" />
+                            <Setter Property="Foreground" Value="{DynamicResource Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

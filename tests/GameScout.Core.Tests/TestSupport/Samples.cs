@@ -12,4 +12,8 @@ internal static class Samples
     public static string EpicPromotions() => Load("epic-promotions.json");
 
     public static string GamerPowerSteam() => Load("gamerpower-steam.json");
+
+    public static string GamerPowerAll() => Load("gamerpower-all.json");
+
+    public static string CheapSharkDeals() => Load("cheapshark-deals.json");
 }

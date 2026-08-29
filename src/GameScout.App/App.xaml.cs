@@ -1,25 +1,26 @@
-using System.Drawing;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Forms;
 using GameScout.App.Services;
 using GameScout.App.ViewModels;
-using GameScout.Core.Aggregation;
+using GameScout.Core.Abstractions;
+using GameScout.Core.DependencyInjection;
 using GameScout.Core.Games;
 using GameScout.Core.Net;
-using GameScout.Core.Sources.Epic;
-using GameScout.Core.Sources.GamerPower;
+using Microsoft.Extensions.DependencyInjection;
 using Application = System.Windows.Application;
 
 namespace GameScout.App;
 
 /// <summary>
-/// Application composition root. Wires the Core services by hand (no DI container needed for an app
-/// this small), owns the tray icon, and runs the initial scan on launch.
+/// Application composition root. Builds the DI container, owns the tray icon, and runs the initial
+/// scans on launch.
 /// </summary>
 public partial class App : Application, IDisposable
 {
-    private HttpClient? _http;
+    private const string UserAgent = "GameScout/0.2 (+https://github.com/lukr-99/GameScout)";
+
+    private ServiceProvider? _services;
     private NotifyIcon? _tray;
     private MainWindow? _window;
     private MainWindowViewModel? _viewModel;
@@ -34,33 +35,48 @@ public partial class App : Application, IDisposable
         bool startInTray = e.Args.Any(a =>
             a.Equals(StartupRegistration.StartupArgument, StringComparison.OrdinalIgnoreCase));
 
-        _log = new ScanLog();
+        _services = BuildServices();
+
+        _log = _services.GetRequiredService<ScanLog>();
         _log.Info($"app started ({(startInTray ? "tray" : "window")} mode)");
 
-        _http = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
-        _http.DefaultRequestHeaders.UserAgent.ParseAdd("GameScout/0.1 (+https://github.com/lukr-99)");
-
-        var httpText = new HttpTextClient(_http);
-        var aggregator = new FreeGameAggregator(
-        [
-            new EpicFreeGamesSource(httpText),
-            new GamerPowerSource(httpText),
-        ]);
-
-        var startup = new StartupRegistration();
-        var theme = new ThemeManager(this);
-
-        _viewModel = new MainWindowViewModel(aggregator, startup, theme);
-        _viewModel.ScanCompleted += OnScanCompleted;
+        _viewModel = _services.GetRequiredService<MainWindowViewModel>();
+        _viewModel.Free.ScanCompleted += OnFreeScanCompleted;
+        _viewModel.Deals.ScanCompleted += report => _log?.RecordDeals(report);
 
         SetupTrayIcon();
 
-        _window = new MainWindow { DataContext = _viewModel };
+        _window = _services.GetRequiredService<MainWindow>();
         if (!startInTray)
             _window.Show();
 
-        // Kick off the first scan immediately so the rundown is ready by the time the user looks.
-        _ = _viewModel.RefreshAsync();
+        // Kick off both scans immediately so the rundown is ready by the time the user looks.
+        _viewModel.RefreshAll();
+    }
+
+    private ServiceProvider BuildServices()
+    {
+        var services = new ServiceCollection();
+
+        services.AddSingleton(_ =>
+        {
+            var http = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
+            http.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+            return http;
+        });
+        services.AddSingleton<IHttpTextClient>(sp => new HttpTextClient(sp.GetRequiredService<HttpClient>()));
+        services.AddGameScoutCore();
+
+        services.AddSingleton(_ => new ThemeManager(this));
+        services.AddSingleton<StartupRegistration>();
+        services.AddSingleton<ScanLog>();
+
+        services.AddSingleton<FreeGamesViewModel>();
+        services.AddSingleton<DealsViewModel>();
+        services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<MainWindow>();
+
+        return services.BuildServiceProvider();
     }
 
     /// <summary>Brings the main window to the foreground, restoring it from the tray if needed.</summary>
@@ -103,13 +119,13 @@ public partial class App : Application, IDisposable
         base.OnExit(e);
     }
 
-    /// <summary>Disposes the tray icon and HTTP client.</summary>
+    /// <summary>Disposes the tray icon and the service provider (which owns the HttpClient).</summary>
     public void Dispose()
     {
         _tray?.Dispose();
         _tray = null;
-        _http?.Dispose();
-        _http = null;
+        _services?.Dispose();
+        _services = null;
         GC.SuppressFinalize(this);
     }
 
@@ -117,7 +133,7 @@ public partial class App : Application, IDisposable
     {
         var menu = new ContextMenuStrip();
         menu.Items.Add("Show rundown", null, (_, _) => ShowWindow());
-        menu.Items.Add("Refresh now", null, (_, _) => _ = _viewModel?.RefreshAsync());
+        menu.Items.Add("Refresh now", null, (_, _) => _viewModel?.RefreshAll());
         menu.Items.Add(new ToolStripSeparator());
 
         var startupItem = new ToolStripMenuItem("Run at Windows startup")
@@ -137,7 +153,7 @@ public partial class App : Application, IDisposable
 
         _tray = new NotifyIcon
         {
-            Icon = SystemIcons.Application,
+            Icon = AppIcon.LoadTrayIcon(),
             Text = "GameScout",
             Visible = true,
             ContextMenuStrip = menu,
@@ -145,9 +161,9 @@ public partial class App : Application, IDisposable
         _tray.DoubleClick += (_, _) => ShowWindow();
     }
 
-    private void OnScanCompleted(FreeGameReport report)
+    private void OnFreeScanCompleted(FreeGameReport report)
     {
-        _log?.Record(report);
+        _log?.RecordFree(report);
 
         if (_tray is null)
             return;
@@ -158,7 +174,9 @@ public partial class App : Application, IDisposable
             return;
 
         int free = report.CurrentlyFree.Count();
-        string title = free > 0 ? $"{free} free game{(free == 1 ? string.Empty : "s")} available" : "No free games right now";
+        string title = free > 0
+            ? $"{free} free game{(free == 1 ? string.Empty : "s")} available"
+            : "No free games right now";
         string body = free > 0
             ? string.Join(", ", report.CurrentlyFree.Take(4).Select(g => g.Title))
             : "Nothing to grab at the moment.";

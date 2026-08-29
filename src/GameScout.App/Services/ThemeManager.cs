@@ -31,6 +31,9 @@ public sealed class ThemeManager
     /// <summary>The currently applied theme.</summary>
     public AppTheme Current { get; private set; } = AppTheme.Light;
 
+    /// <summary>Raised after a theme has been applied, so chrome (window borders) can re-sync.</summary>
+    public event EventHandler? ThemeChanged;
+
     /// <summary>Applies <paramref name="theme"/>, replacing the theme dictionary in place.</summary>
     public void Apply(AppTheme theme)
     {
@@ -42,6 +45,7 @@ public sealed class ThemeManager
 
         _application.Resources.MergedDictionaries[0] = dictionary;
         Current = theme;
+        ThemeChanged?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>Flips between light and dark, returning the newly applied theme.</summary>

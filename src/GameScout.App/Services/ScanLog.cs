@@ -42,16 +42,27 @@ public sealed class ScanLog
     /// <summary>Writes a free-form informational line.</summary>
     public void Info(string message) => Append(message);
 
-    /// <summary>Writes a one-line summary of a completed scan plus any per-source errors.</summary>
-    public void Record(FreeGameReport report)
+    /// <summary>Writes a one-line summary of a completed giveaway scan plus any per-source errors.</summary>
+    public void RecordFree(FreeGameReport report)
     {
         var builder = new StringBuilder();
         int free = report.CurrentlyFree.Count();
         int upcoming = report.Upcoming.Count();
-        builder.Append(CultureInfo.InvariantCulture, $"scan complete: {free} free, {upcoming} upcoming");
+        builder.Append(CultureInfo.InvariantCulture, $"free scan: {free} free, {upcoming} upcoming");
 
         if (free > 0)
             builder.Append(" | free: ").Append(string.Join(", ", report.CurrentlyFree.Select(g => $"{g.Title} ({g.Store})")));
+        if (report.Errors.Count > 0)
+            builder.Append(" | errors: ").Append(string.Join("; ", report.Errors));
+
+        Append(builder.ToString());
+    }
+
+    /// <summary>Writes a one-line summary of a completed deals scan plus any per-source errors.</summary>
+    public void RecordDeals(DealReport report)
+    {
+        var builder = new StringBuilder();
+        builder.Append(CultureInfo.InvariantCulture, $"deals scan: {report.Deals.Count} on sale");
         if (report.Errors.Count > 0)
             builder.Append(" | errors: ").Append(string.Join("; ", report.Errors));
 

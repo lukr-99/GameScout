@@ -4,7 +4,7 @@ using GameScout.Core.Tests.TestSupport;
 
 namespace GameScout.Core.Tests.Aggregation;
 
-public sealed class FreeGameAggregatorTests
+public sealed class GiveawayAggregatorTests
 {
     private static readonly DateTimeOffset Now = new(2026, 8, 28, 12, 0, 0, TimeSpan.Zero);
     private static readonly FakeTimeProvider Clock = new(Now);
@@ -17,7 +17,7 @@ public sealed class FreeGameAggregatorTests
         var steam = StubGiveawaySource.Returning(
             "Steam", new FreeGame("B", GameStore.Steam, GiveawayKind.CurrentlyFree));
 
-        var aggregator = new FreeGameAggregator([epic, steam], Clock);
+        var aggregator = new GiveawayAggregator([epic, steam], Clock);
         FreeGameReport report = await aggregator.ScanAsync();
 
         Assert.Equal(2, report.Games.Count);
@@ -31,7 +31,7 @@ public sealed class FreeGameAggregatorTests
             "Epic", new FreeGame("A", GameStore.Epic, GiveawayKind.CurrentlyFree));
         var broken = StubGiveawaySource.Failing("Steam");
 
-        var aggregator = new FreeGameAggregator([ok, broken], Clock);
+        var aggregator = new GiveawayAggregator([ok, broken], Clock);
         FreeGameReport report = await aggregator.ScanAsync();
 
         Assert.Single(report.Games);
@@ -47,7 +47,7 @@ public sealed class FreeGameAggregatorTests
         var two = StubGiveawaySource.Returning(
             "Aggregator", new FreeGame("breathedge", GameStore.Epic, GiveawayKind.CurrentlyFree));
 
-        var aggregator = new FreeGameAggregator([one, two], Clock);
+        var aggregator = new GiveawayAggregator([one, two], Clock);
         FreeGameReport report = await aggregator.ScanAsync();
 
         Assert.Single(report.Games);
@@ -61,7 +61,7 @@ public sealed class FreeGameAggregatorTests
             new FreeGame("Zeta", GameStore.Epic, GiveawayKind.Upcoming, StartsUtc: Now.AddDays(3)),
             new FreeGame("Alpha", GameStore.Steam, GiveawayKind.CurrentlyFree));
 
-        var aggregator = new FreeGameAggregator([source], Clock);
+        var aggregator = new GiveawayAggregator([source], Clock);
         FreeGameReport report = await aggregator.ScanAsync();
 
         Assert.Equal(GiveawayKind.CurrentlyFree, report.Games[0].Kind);
@@ -76,7 +76,7 @@ public sealed class FreeGameAggregatorTests
             new FreeGame("Expired", GameStore.Epic, GiveawayKind.CurrentlyFree, EndsUtc: Now.AddDays(-1)),
             new FreeGame("Live", GameStore.Epic, GiveawayKind.CurrentlyFree, EndsUtc: Now.AddDays(1)));
 
-        var aggregator = new FreeGameAggregator([source], Clock);
+        var aggregator = new GiveawayAggregator([source], Clock);
         FreeGameReport report = await aggregator.ScanAsync();
 
         FreeGame game = Assert.Single(report.Games);

@@ -1,0 +1,46 @@
+[
+  {
+    "id": 3716,
+    "title": "Dwarven Realms (Steam) Key Giveaway",
+    "worth": "$9.99",
+    "thumbnail": "https://www.gamerpower.com/offers/1/dwarven.jpg",
+    "image": "https://www.gamerpower.com/offers/1b/dwarven.jpg",
+    "open_giveaway_url": "https://www.gamerpower.com/open/dwarven-realms-steam-key-giveaway",
+    "type": "Game",
+    "platforms": "PC, Steam",
+    "end_date": "N/A",
+    "status": "Active"
+  },
+  {
+    "id": 3720,
+    "title": "Some Epic Freebie (Epic Games Store) Giveaway",
+    "worth": "$19.99",
+    "thumbnail": "https://www.gamerpower.com/offers/1/epic.jpg",
+    "open_giveaway_url": "https://www.gamerpower.com/open/epic-freebie",
+    "type": "Game",
+    "platforms": "PC, Epic Games Store",
+    "end_date": "2026-09-10 00:00:00",
+    "status": "Active"
+  },
+  {
+    "id": 3730,
+    "title": "GOG Classic Adventure (DRM-Free) Giveaway",
+    "worth": "$14.99",
+    "thumbnail": "https://www.gamerpower.com/offers/1/gog.jpg",
+    "open_giveaway_url": "https://www.gamerpower.com/open/gog-classic",
+    "type": "Game",
+    "platforms": "PC, DRM-Free, GOG",
+    "end_date": "N/A",
+    "status": "Active"
+  },
+  {
+    "id": 3999,
+    "title": "Totally Free Forever (Steam)",
+    "worth": "N/A",
+    "open_giveaway_url": "https://www.gamerpower.com/open/f2p",
+    "type": "Game",
+    "platforms": "PC, Steam",
+    "end_date": "N/A",
+    "status": "Active"
+  }
+]

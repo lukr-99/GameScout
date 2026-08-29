@@ -1,6 +1,6 @@
 namespace GameScout.Core.Games;
 
-/// <summary>The storefront a free game offer originates from.</summary>
+/// <summary>The storefront a free game or deal originates from.</summary>
 public enum GameStore
 {
     /// <summary>Storefront could not be determined.</summary>
@@ -15,6 +15,33 @@ public enum GameStore
     /// <summary>GOG.com.</summary>
     Gog,
 
-    /// <summary>Any other storefront reported by an aggregated source.</summary>
+    /// <summary>Humble Store.</summary>
+    Humble,
+
+    /// <summary>Fanatical.</summary>
+    Fanatical,
+
+    /// <summary>Green Man Gaming.</summary>
+    GreenManGaming,
+
+    /// <summary>Ubisoft Store / Uplay.</summary>
+    Ubisoft,
+
+    /// <summary>EA / Origin.</summary>
+    Origin,
+
+    /// <summary>IndieGala.</summary>
+    IndieGala,
+
+    /// <summary>itch.io.</summary>
+    Itch,
+
+    /// <summary>Amazon Prime Gaming.</summary>
+    PrimeGaming,
+
+    /// <summary>Microsoft / Xbox store.</summary>
+    Microsoft,
+
+    /// <summary>Any other storefront reported by a source.</summary>
     Other,
 }

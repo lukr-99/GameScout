@@ -16,6 +16,7 @@
             <conv:StringToVisibilityConverter x:Key="StringToVisibility" />
             <conv:CountToVisibilityConverter x:Key="CountToVisibility" />
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+            <conv:ImageUrlToSourceConverter x:Key="ImageSource" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

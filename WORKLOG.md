@@ -1,5 +1,26 @@
 # WORKLOG
 
+## 2026-08-29 — Session 3: rebrand to GameScout, DI, deals tab, more sources, theming
+- **Renamed** FreeGameScout -> GameScout (solution/projects/namespaces/assembly/registry/log/repo);
+  domain types like `FreeGame` unchanged. GitHub repo renamed to `lukr-99/GameScout`.
+- **Proper app icon:** generated a multi-size `.ico` (magnifying-glass "scout" over the accent
+  gradient with a play mark); wired as exe, window, and tray icon.
+- **Dependency Injection:** added `Microsoft.Extensions.DependencyInjection`; Core exposes
+  `AddGameScoutCore` (registers sources, aggregators, `TimeProvider`, options). App builds the
+  `ServiceProvider` and ctor-injects view-models + `MainWindow`.
+- **Two tabs (MVVM):** `ScannerViewModel` base + `FreeGamesViewModel` / `DealsViewModel` /
+  `MainWindowViewModel` shell; `FreeGamesView` / `DealsView` user controls. One class per file.
+- **On-sale tab:** new `CheapSharkSource` (prices, discount %, cover images, store mapping) +
+  `DealAggregator` (dedupe by title, deepest discount first, capped). `GameDeal` / `DealReport` model.
+- **More free-game sites:** broadened `GamerPowerSource` to all platforms (GOG, Prime, itch.io, …),
+  added images, and it now skips Epic (the direct Epic source is authoritative). `FreeGame` gained
+  `ImageUrl`; Epic parses `keyImages`; extended `GameStore` enum + display names.
+- **Images on cards** via an async `ImageUrlToSourceConverter`.
+- **Themed native chrome:** `WindowChromeThemer` tints the Win11 title bar/border/text to the theme
+  via DWM attributes, re-applied on theme toggle.
+- **Live end-to-end verification (headless):** DI graph resolves; free scan = 17 free + 1 upcoming
+  across Epic/Steam/itch/others, deals scan = 32 on sale. Build 0/0, tests **28/28**.
+
 ## 2026-08-29 — Session 2: locale config, scan logging, live smoke test
 - **Live end-to-end smoke test (headless):** ran the app in `--tray` mode against the real Epic +
   GamerPower APIs. Result logged: "3 free, 1 upcoming | Breathedge (Epic), Rival Stars (Epic),

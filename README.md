@@ -1,22 +1,27 @@
 # GameScout
 
-A small **WPF (.NET 10) Windows tray app** that checks what games are **free to keep** right now —
-and **coming soon** — on the **Epic Games Store** and **Steam**, then gives you a quick rundown at
-startup. Glance at it, grab what you want, close it.
+A small **WPF (.NET 10) Windows tray app** that scouts what's worth grabbing on PC storefronts — the
+games that are **free to keep** right now (and coming soon), plus **popular games on sale** — and
+gives you a quick, glanceable rundown at startup.
 
 > New here or resuming on another machine? Read **[HANDOFF.md](HANDOFF.md)** first.
 
+![GameScout icon](src/GameScout.App/Assets/gamescout.png)
+
 ## Features
-- **On-launch scan** of Epic + Steam for "normally paid, currently free" games.
-- **Coming soon** section for games announced to go free later (Epic).
-- **Tray app**: shows a rundown window and a notification-area balloon; closing the window hides to
-  the tray, and the tray menu can refresh, toggle startup, or exit.
-- **Run at Windows startup** toggle (per-user, no admin needed).
-- **Light / dark** themes with a runtime toggle.
+- **Two tabs:**
+  - **Free now** — normally-paid games currently free to keep, plus an *upcoming* section.
+  - **On sale** — popular discounted games with **cover art**, **sale + normal price**, and the discount.
+- **Many storefronts:** Epic (direct) and — via aggregators — Steam, GOG, Humble, Fanatical,
+  Prime Gaming, itch.io and more; deals span Steam/GOG/Epic/Humble/Fanatical/GMG/… (CheapShark).
+- **Tray app** with a startup balloon; closing the window hides to the tray.
+- **Run at Windows startup** toggle (per-user, no admin).
+- **Light / dark themes** with a runtime toggle — including the **native Win11 title bar & border**,
+  which are tinted to match the theme.
 - Click any game to open its store/claim page in your browser.
 
 ## Requirements
-- **Windows** (WPF + WinForms tray).
+- **Windows 11** (uses DWM window-chrome theming; degrades gracefully on older Windows).
 - **.NET 10 SDK** — pinned to `10.0.102` in `global.json`.
 
 ## Build & run
@@ -28,21 +33,24 @@ dotnet run   --project src/GameScout.App
 Start hidden in the tray (used by the startup entry): `dotnet run --project src/GameScout.App -- --tray`
 
 ## Architecture
-Dependency direction is **App → Core**; `Core` has **no WPF dependency** and is fully unit-tested.
+Dependency direction is **App → Core**; `Core` has **no WPF dependency**, is fully unit-tested, and
+is wired with **Microsoft.Extensions.DependencyInjection** via `AddGameScoutCore`. MVVM throughout,
+one class per file. See **[STRUCTURE.md](STRUCTURE.md)** and **[RULES.md](RULES.md)**.
 
 | Project | Target | Responsibility |
 | --- | --- | --- |
-| `src/GameScout.Core` | `net10.0` | Domain model, giveaway sources, aggregator, MVVM base |
-| `src/GameScout.App` | `net10.0-windows` | WPF UI, tray icon, startup registration, theming |
+| `src/GameScout.Core` | `net10.0` | Model, giveaway/deal sources, aggregators, DI module, MVVM base |
+| `src/GameScout.App` | `net10.0-windows` | WPF UI (tabs, cards, theming, tray), composition root |
 | `tests/GameScout.Core.Tests` | `net10.0` | xUnit tests (deterministic, no network) |
 
-See **[STRUCTURE.md](STRUCTURE.md)** for the full layout and **[RULES.md](RULES.md)** for the
-engineering rules this repo follows.
-
-## Data sources
-Both are public and unauthenticated (no API key):
+## Data sources (public, no API key)
 - **Epic Games Store** promotions feed — authoritative for Epic's weekly free games.
-- **GamerPower** giveaways API (Steam filter) — catches normally-paid Steam games given away free.
+- **GamerPower** giveaways API — paid games given away free across many stores (Epic excluded to
+  avoid duplicates).
+- **CheapShark** deals API — popular discounted games with images and prices across many stores.
+
+A descriptive `User-Agent` is sent (required by CheapShark).
 
 ## Status
-Build clean, 13/13 tests passing. Not yet manually smoke-tested on real hardware — see HANDOFF.md.
+Build clean, 28/28 tests passing; data pipeline + DI verified end-to-end against live APIs. Visual
+rendering is best confirmed on a real display — see HANDOFF.md.

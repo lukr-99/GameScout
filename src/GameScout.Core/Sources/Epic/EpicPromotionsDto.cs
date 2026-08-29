@@ -51,6 +51,18 @@ internal sealed class EpicElementDto
 
     [JsonPropertyName("promotions")]
     public EpicPromotionsBlockDto? Promotions { get; init; }
+
+    [JsonPropertyName("keyImages")]
+    public IReadOnlyList<EpicKeyImageDto>? KeyImages { get; init; }
+}
+
+internal sealed class EpicKeyImageDto
+{
+    [JsonPropertyName("type")]
+    public string? Type { get; init; }
+
+    [JsonPropertyName("url")]
+    public string? Url { get; init; }
 }
 
 internal sealed class EpicCatalogNsDto
