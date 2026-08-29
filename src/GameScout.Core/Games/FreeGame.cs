@@ -11,6 +11,7 @@ namespace GameScout.Core.Games;
 /// <param name="StartsUtc">When the free window opens (UTC), if known.</param>
 /// <param name="EndsUtc">When the free window closes (UTC), if known.</param>
 /// <param name="ImageUrl">A cover/thumbnail image URL, if known.</param>
+/// <param name="WorthAmount">Numeric normal price used for worth filtering; null when unknown.</param>
 public sealed record FreeGame(
     string Title,
     GameStore Store,
@@ -19,7 +20,8 @@ public sealed record FreeGame(
     string? NormalPrice = null,
     DateTimeOffset? StartsUtc = null,
     DateTimeOffset? EndsUtc = null,
-    string? ImageUrl = null)
+    string? ImageUrl = null,
+    decimal? WorthAmount = null)
 {
     /// <summary>
     /// Whether this offer is still worth showing at <paramref name="nowUtc"/>: currently-free

@@ -16,4 +16,6 @@ internal static class Samples
     public static string GamerPowerAll() => Load("gamerpower-all.json");
 
     public static string CheapSharkDeals() => Load("cheapshark-deals.json");
+
+    public static string GitHubRelease() => Load("github-release.json");
 }

@@ -57,8 +57,12 @@ public sealed class GamerPowerSource : IGiveawaySource
         List<FreeGame> games = [];
         foreach (GamerPowerGiveawayDto entry in entries)
         {
-            if (string.IsNullOrWhiteSpace(entry.Title) || !HasRealPrice(entry.Worth))
+            if (string.IsNullOrWhiteSpace(entry.Title))
                 continue;
+
+            decimal? worth = ParseWorth(entry.Worth);
+            if (worth is null or <= 0m)
+                continue; // Free-to-play / unknown value: not a paid-game giveaway.
 
             GameStore store = DetectStore(entry.Platforms);
             if (store == GameStore.Epic)
@@ -72,21 +76,23 @@ public sealed class GamerPowerSource : IGiveawaySource
                 NormalPrice: entry.Worth,
                 StartsUtc: null,
                 EndsUtc: ParseEndDate(entry.EndDate),
-                ImageUrl: entry.Thumbnail ?? entry.Image));
+                ImageUrl: entry.Thumbnail ?? entry.Image,
+                WorthAmount: worth));
         }
 
         return games;
     }
 
-    private static bool HasRealPrice(string? worth)
+    private static decimal? ParseWorth(string? worth)
     {
         if (string.IsNullOrWhiteSpace(worth) ||
             worth.Equals("N/A", StringComparison.OrdinalIgnoreCase))
-            return false;
+            return null;
 
         string digits = new(worth.Where(c => char.IsDigit(c) || c == '.').ToArray());
         return decimal.TryParse(digits, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal amount)
-            && amount > 0m;
+            ? amount
+            : null;
     }
 
     private static GameStore DetectStore(string? platforms)

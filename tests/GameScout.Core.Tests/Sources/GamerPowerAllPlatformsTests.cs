@@ -27,6 +27,15 @@ public sealed class GamerPowerAllPlatformsTests
     }
 
     [Fact]
+    public void Parse_ParsesWorthAmount()
+    {
+        IReadOnlyList<FreeGame> games = GamerPowerSource.Parse(Samples.GamerPowerAll());
+
+        FreeGame steam = games.Single(g => g.Store == GameStore.Steam);
+        Assert.Equal(9.99m, steam.WorthAmount);
+    }
+
+    [Fact]
     public void Parse_UsesThumbnailBeforeFullImage()
     {
         IReadOnlyList<FreeGame> games = GamerPowerSource.Parse(Samples.GamerPowerAll());

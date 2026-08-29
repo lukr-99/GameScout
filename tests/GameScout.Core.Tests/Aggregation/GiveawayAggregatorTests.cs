@@ -69,6 +69,23 @@ public sealed class GiveawayAggregatorTests
     }
 
     [Fact]
+    public async Task ScanAsync_MinimumWorth_DropsCheapButKeepsUnknownAndDear()
+    {
+        var source = StubGiveawaySource.Returning(
+            "Mixed",
+            new FreeGame("Trivial", GameStore.Itch, GiveawayKind.CurrentlyFree, WorthAmount: 0.99m),
+            new FreeGame("Worthy", GameStore.Epic, GiveawayKind.CurrentlyFree, WorthAmount: 24.99m),
+            new FreeGame("Unknown", GameStore.Steam, GiveawayKind.CurrentlyFree, WorthAmount: null));
+
+        var aggregator = new GiveawayAggregator([source], Clock, minimumWorth: 3m);
+        FreeGameReport report = await aggregator.ScanAsync();
+
+        Assert.DoesNotContain(report.Games, g => g.Title == "Trivial");
+        Assert.Contains(report.Games, g => g.Title == "Worthy");
+        Assert.Contains(report.Games, g => g.Title == "Unknown");
+    }
+
+    [Fact]
     public async Task ScanAsync_DropsExpiredCurrentOffers()
     {
         var source = StubGiveawaySource.Returning(

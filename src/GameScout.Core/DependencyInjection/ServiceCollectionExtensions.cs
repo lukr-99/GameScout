@@ -3,6 +3,7 @@ using GameScout.Core.Aggregation;
 using GameScout.Core.Sources.CheapShark;
 using GameScout.Core.Sources.Epic;
 using GameScout.Core.Sources.GamerPower;
+using GameScout.Core.Updating;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -43,8 +44,16 @@ public static class ServiceCollectionExtensions
             new CheapSharkSource(sp.GetRequiredService<IHttpTextClient>()));
 
         // Aggregators (deps resolved from the registrations above).
-        services.AddSingleton<GiveawayAggregator>();
+        services.AddSingleton(sp => new GiveawayAggregator(
+            sp.GetServices<IGiveawaySource>(),
+            sp.GetRequiredService<TimeProvider>(),
+            options.MinimumWorth));
         services.AddSingleton<DealAggregator>();
+
+        // Update checking (GitHub releases).
+        services.AddSingleton<IReleaseSource>(sp =>
+            new GitHubReleaseSource(sp.GetRequiredService<IHttpTextClient>()));
+        services.AddSingleton<UpdateChecker>();
 
         return services;
     }

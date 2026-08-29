@@ -7,6 +7,7 @@ using GameScout.Core.Abstractions;
 using GameScout.Core.DependencyInjection;
 using GameScout.Core.Games;
 using GameScout.Core.Net;
+using GameScout.Core.Updating;
 using Microsoft.Extensions.DependencyInjection;
 using Application = System.Windows.Application;
 
@@ -25,6 +26,8 @@ public partial class App : Application, IDisposable
     private MainWindow? _window;
     private MainWindowViewModel? _viewModel;
     private ScanLog? _log;
+    private ToolStripMenuItem? _updateMenuItem;
+    private ReleaseInfo? _pendingUpdate;
     private bool _exiting;
 
     /// <inheritdoc/>
@@ -52,6 +55,47 @@ public partial class App : Application, IDisposable
 
         // Kick off both scans immediately so the rundown is ready by the time the user looks.
         _viewModel.RefreshAll();
+
+        // Check for a newer release in the background; notify via the tray if one is found.
+        _ = CheckForUpdatesAsync();
+    }
+
+    private async Task CheckForUpdatesAsync()
+    {
+        if (_services is null)
+            return;
+
+        try
+        {
+            Version current = typeof(App).Assembly.GetName().Version ?? new Version(0, 0);
+            UpdateChecker checker = _services.GetRequiredService<UpdateChecker>();
+            ReleaseInfo? update = await checker.CheckForUpdateAsync(current).ConfigureAwait(true);
+            if (update is not null)
+                OnUpdateAvailable(update);
+        }
+        catch (Exception ex)
+        {
+            _log?.Info($"update check failed: {ex.Message}");
+        }
+    }
+
+    private void OnUpdateAvailable(ReleaseInfo update)
+    {
+        _pendingUpdate = update;
+        _log?.Info($"update available: {update.TagName}");
+
+        if (_updateMenuItem is not null)
+        {
+            _updateMenuItem.Text = $"Download update {update.TagName}";
+            _updateMenuItem.Visible = true;
+        }
+
+        if (_tray is not null)
+        {
+            _tray.BalloonTipTitle = $"Update available: {update.TagName}";
+            _tray.BalloonTipText = "Click the tray icon to download the latest GameScout.";
+            _tray.ShowBalloonTip(6000);
+        }
     }
 
     private ServiceProvider BuildServices()
@@ -147,6 +191,11 @@ public partial class App : Application, IDisposable
                 _viewModel.RunAtStartup = startupItem.Checked;
         };
         menu.Items.Add(startupItem);
+        menu.Items.Add("Open log folder", null, (_, _) => OpenLogFolder());
+
+        _updateMenuItem = new ToolStripMenuItem("Download update") { Visible = false };
+        _updateMenuItem.Click += (_, _) => UrlOpener.Open(_pendingUpdate?.DownloadUrl ?? _pendingUpdate?.HtmlUrl);
+        menu.Items.Add(_updateMenuItem);
 
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add("Exit", null, (_, _) => ExitApp());
@@ -159,6 +208,12 @@ public partial class App : Application, IDisposable
             ContextMenuStrip = menu,
         };
         _tray.DoubleClick += (_, _) => ShowWindow();
+    }
+
+    private void OpenLogFolder()
+    {
+        string? folder = _log is null ? null : System.IO.Path.GetDirectoryName(_log.FilePath);
+        UrlOpener.Open(folder);
     }
 
     private void OnFreeScanCompleted(FreeGameReport report)

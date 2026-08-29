@@ -1,5 +1,20 @@
 # WORKLOG
 
+## 2026-08-29 — Session 4: min-worth filter, update checker, installer/release scaffolding
+- **Min-worth filter:** `FreeGame` gained numeric `WorthAmount` (Epic from cents, GamerPower from
+  parsed worth); `GiveawayAggregator` drops offers below `GameScoutOptions.MinimumWorth` (default
+  $2.99, unknown-price kept). Live run trimmed free 17 → 13 (sub-$2.99 itch freebies gone).
+- **In-app update checker:** new `Core/Updating` — `IReleaseSource`/`GitHubReleaseSource` (parses the
+  GitHub latest-release API, picks the installer asset), `ReleaseVersion` (tag → Version), and
+  `UpdateChecker` (compares to the running assembly version). App checks on launch and, when newer,
+  shows a tray balloon + "Download update" menu item. Also added an "Open log folder" tray item.
+- **Installer + release automation (scaffolding):** `installer/GameScout.iss` (Inno Setup, per-user),
+  `.github/workflows/release.yml` (tag `v*` → test, publish self-contained win-x64, build installer,
+  create GitHub Release with the asset), and `docs/RELEASING.md`. This closes the loop: a tagged
+  release becomes the asset the update checker points at.
+- Tests: +11 (min-worth, worth parsing, GitHub release parse, version parse, update-checker paths).
+  Build 0/0, tests **39/39**. Verified live/headless.
+
 ## 2026-08-29 — Session 3: rebrand to GameScout, DI, deals tab, more sources, theming
 - **Renamed** FreeGameScout -> GameScout (solution/projects/namespaces/assembly/registry/log/repo);
   domain types like `FreeGame` unchanged. GitHub repo renamed to `lukr-99/GameScout`.

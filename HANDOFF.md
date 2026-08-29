@@ -20,10 +20,12 @@ one-class-per-file layout.
 
 ## Current status
 - `dotnet build GameScout.slnx -c Release` → **0 warnings, 0 errors**
-- `dotnet test GameScout.slnx -c Release` → **28/28 passing**
-- **Data pipeline + DI verified live (headless):** free scan 17 free + 1 upcoming; deals scan 32 on
-  sale (see `%LOCALAPPDATA%\GameScout\scout.log`).
-- **Visual rendering not yet eyeballed** on a real display — that's the first task below.
+- `dotnet test GameScout.slnx -c Release` → **39/39 passing**
+- **Data pipeline + DI + update checker verified live (headless):** free scan 13 free + 1 upcoming
+  (after the min-worth filter), deals scan 32 on sale (see `%LOCALAPPDATA%\GameScout\scout.log`).
+- **Update checker** runs on launch (no releases yet → silent); tray shows a notification when a
+  newer GitHub Release exists. **Installer + release automation** are scaffolded but not yet run on CI.
+- **Visual rendering not yet eyeballed** on a real display — a top task below.
 
 ## How to resume (new machine)
 1. Install the **.NET 10 SDK** (`10.0.102`, per `global.json`). Windows only (WPF + WinForms tray;
@@ -66,10 +68,18 @@ tests/GameScout.Core.Tests (net10.0)     xUnit, deterministic (no network)
   (`?sortBy=Deal Rating&onSale=1`). A **descriptive User-Agent is required by CheapShark** and is set
   by the app's `HttpClient`.
 
+## Releases & auto-update
+- `Core/Updating` checks the latest GitHub Release and compares to the running version. On launch the
+  app notifies via the tray and offers **Download update**.
+- Cutting a release is automated: bump `<Version>` in `Directory.Build.props`, then
+  `git tag vX.Y.Z && git push origin vX.Y.Z`. The **Release** workflow publishes, builds the Inno
+  Setup installer, and attaches it to a GitHub Release (the asset the update checker points at).
+  Full details in `docs/RELEASING.md`. **Next:** run this once end-to-end (needs Windows CI).
+
 ## Known gaps / next slices (see TODO.md)
 - Visual smoke test still pending (above).
-- Broadened GamerPower surfaces some low-value itch.io freebies — consider a min-worth filter.
-- No settings UI yet for locale/country (supported in `GameScoutOptions`).
+- Installer/release workflow not yet exercised on CI; silent auto-update not yet implemented.
+- No settings UI yet for locale/country/min-worth (all supported in `GameScoutOptions`).
 - No app-layer view-model tests (Core is covered).
 
 ## Verification baseline (before committing)

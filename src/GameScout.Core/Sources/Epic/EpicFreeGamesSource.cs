@@ -130,7 +130,8 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
                     NormalPrice: element.Price?.TotalPrice?.FmtPrice?.OriginalPrice,
                     StartsUtc: offer.StartDate,
                     EndsUtc: offer.EndDate,
-                    ImageUrl: PickImage(element.KeyImages));
+                    ImageUrl: PickImage(element.KeyImages),
+                    WorthAmount: WorthFromCents(element.Price?.TotalPrice?.OriginalPrice));
                 return true;
             }
         }
@@ -163,6 +164,9 @@ public sealed class EpicFreeGamesSource : IGiveawaySource
 
     private static string? FirstSlug(IReadOnlyList<EpicSlugMappingDto>? mappings)
         => mappings is { Count: > 0 } ? mappings[0].PageSlug : null;
+
+    private static decimal? WorthFromCents(long? cents)
+        => cents is > 0 ? cents.Value / 100m : null;
 
     private static string? PickImage(IReadOnlyList<EpicKeyImageDto>? images)
     {

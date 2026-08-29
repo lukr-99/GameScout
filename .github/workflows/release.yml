@@ -1,0 +1,50 @@
+name: Release
+
+# Cut a release by pushing a tag like v0.3.0. This publishes the app, builds the
+# installer, and attaches GameScoutSetup-<version>.exe to a GitHub Release — which is
+# exactly what the in-app update checker looks for.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Derive version from tag
+        id: ver
+        shell: pwsh
+        run: |
+          $v = "${{ github.ref_name }}" -replace '^v',''
+          "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Test
+        run: dotnet test GameScout.slnx -c Release
+
+      - name: Publish (self-contained win-x64)
+        run: >
+          dotnet publish src/GameScout.App/GameScout.App.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:Version=${{ steps.ver.outputs.version }}
+          -o publish
+
+      - name: Build installer (Inno Setup)
+        run: |
+          choco install innosetup --no-progress -y
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=${{ steps.ver.outputs.version }} installer\GameScout.iss
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: installer/dist/GameScoutSetup-${{ steps.ver.outputs.version }}.exe
+          generate_release_notes: true

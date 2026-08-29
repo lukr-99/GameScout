@@ -1,0 +1,16 @@
+{
+  "tag_name": "v0.3.0",
+  "name": "GameScout 0.3.0",
+  "html_url": "https://github.com/lukr-99/GameScout/releases/tag/v0.3.0",
+  "published_at": "2026-09-01T10:00:00Z",
+  "assets": [
+    {
+      "name": "GameScout-0.3.0-notes.txt",
+      "browser_download_url": "https://github.com/lukr-99/GameScout/releases/download/v0.3.0/notes.txt"
+    },
+    {
+      "name": "GameScoutSetup-0.3.0.exe",
+      "browser_download_url": "https://github.com/lukr-99/GameScout/releases/download/v0.3.0/GameScoutSetup-0.3.0.exe"
+    }
+  ]
+}

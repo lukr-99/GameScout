@@ -10,4 +10,10 @@ public sealed class GameScoutOptions
 
     /// <summary>Country code scoping the Epic promotions query (e.g. "US").</summary>
     public string Country { get; set; } = EpicFreeGamesSource.DefaultCountry;
+
+    /// <summary>
+    /// Hides free games whose normal price is below this value, filtering out trivial freebies
+    /// (e.g. tiny itch.io games). Offers with an unknown price are always kept. Default: $2.99.
+    /// </summary>
+    public decimal MinimumWorth { get; set; } = 2.99m;
 }

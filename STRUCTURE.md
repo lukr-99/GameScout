@@ -4,7 +4,9 @@ Repository layout and dependency intent.
 
 ```text
 GameScout/
-|- .github/workflows/ci.yml
+|- .github/workflows/            (ci.yml, release.yml)
+|- installer/GameScout.iss       (Inno Setup installer script)
+|- docs/RELEASING.md
 |- src/
 |  |- GameScout.Core/                     (net10.0, platform-neutral, no WPF)
 |  |  |- Abstractions/
@@ -21,9 +23,10 @@ GameScout/
 |  |  |- Mvvm/                            (ObservableObject, RelayCommand)
 |  |  |- Net/HttpTextClient.cs
 |  |  |- Sources/
-|  |     |- Epic/                         (free games + images)
-|  |     |- GamerPower/                   (all-platform giveaways + images, skips Epic)
-|  |     |- CheapShark/                   (deals: prices, discount, images, store map)
+|  |  |  |- Epic/                         (free games + images + worth)
+|  |  |  |- GamerPower/                   (all-platform giveaways + images, skips Epic)
+|  |  |  |- CheapShark/                   (deals: prices, discount, images, store map)
+|  |  |- Updating/                        (GitHub release source, version parse, UpdateChecker)
 |  |- GameScout.App/                      (net10.0-windows, WPF + WinForms tray)
 |     |- Assets/gamescout.ico             (app + window + tray icon)
 |     |- Converters/Converters.cs

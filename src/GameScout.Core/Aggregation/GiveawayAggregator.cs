@@ -12,15 +12,24 @@ public sealed class GiveawayAggregator
 {
     private readonly IReadOnlyList<IGiveawaySource> _sources;
     private readonly TimeProvider _time;
+    private readonly decimal _minimumWorth;
 
     /// <summary>Initializes a new <see cref="GiveawayAggregator"/>.</summary>
     /// <param name="sources">The sources to query.</param>
     /// <param name="time">Clock used for relevance filtering; defaults to the system clock.</param>
-    public GiveawayAggregator(IEnumerable<IGiveawaySource> sources, TimeProvider? time = null)
+    /// <param name="minimumWorth">
+    /// Drops giveaways whose known normal price is below this value, to filter out trivial freebies.
+    /// Offers with an unknown price are always kept. Defaults to 0 (no filtering).
+    /// </param>
+    public GiveawayAggregator(
+        IEnumerable<IGiveawaySource> sources,
+        TimeProvider? time = null,
+        decimal minimumWorth = 0m)
     {
         ArgumentNullException.ThrowIfNull(sources);
         _sources = [.. sources];
         _time = time ?? TimeProvider.System;
+        _minimumWorth = minimumWorth;
     }
 
     /// <summary>Queries all sources concurrently and merges their offers.</summary>
@@ -47,6 +56,10 @@ public sealed class GiveawayAggregator
         return new FreeGameReport(ordered, errors, now);
     }
 
+    // Keep offers whose worth is unknown or at/above the configured minimum.
+    private bool MeetsWorth(FreeGame game)
+        => _minimumWorth <= 0m || game.WorthAmount is null || game.WorthAmount.Value >= _minimumWorth;
+
     private static async Task<IReadOnlyList<FreeGame>> SafeFetchAsync(
         IGiveawaySource source, CancellationToken cancellationToken)
     {
@@ -65,13 +78,13 @@ public sealed class GiveawayAggregator
         }
     }
 
-    private static IReadOnlyList<FreeGame> Normalize(IEnumerable<FreeGame> games, DateTimeOffset now)
+    private IReadOnlyList<FreeGame> Normalize(IEnumerable<FreeGame> games, DateTimeOffset now)
     {
         HashSet<(string, GameStore, GiveawayKind)> seen = [];
         List<FreeGame> deduped = [];
         foreach (FreeGame game in games)
         {
-            if (!game.IsRelevantAt(now))
+            if (!game.IsRelevantAt(now) || !MeetsWorth(game))
                 continue;
 
             (string, GameStore, GiveawayKind) key =
