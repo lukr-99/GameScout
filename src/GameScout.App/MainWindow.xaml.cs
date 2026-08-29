@@ -53,4 +53,10 @@ public partial class MainWindow : Window
         if (System.Windows.Application.Current is App app)
             app.HideToTray();
     }
+
+    private void OnSettingsClick(object sender, RoutedEventArgs e)
+    {
+        if (System.Windows.Application.Current is App app)
+            app.ShowSettings(this);
+    }
 }

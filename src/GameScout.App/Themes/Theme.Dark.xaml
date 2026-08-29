@@ -10,6 +10,9 @@
     <SolidColorBrush x:Key="Text.Primary" Color="#F2F4F8" />
     <SolidColorBrush x:Key="Text.Secondary" Color="#B7C0CD" />
     <SolidColorBrush x:Key="Text.Muted" Color="#75808F" />
+    <SolidColorBrush x:Key="Text.Error" Color="#FF8A80" />
+
+    <SolidColorBrush x:Key="Input.Background" Color="#1E232B" />
 
     <SolidColorBrush x:Key="Accent" Color="#5B86F5" />
     <SolidColorBrush x:Key="Accent.Foreground" Color="#0E1116" />

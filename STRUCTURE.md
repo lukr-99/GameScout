@@ -22,6 +22,7 @@ GameScout/
 |  |  |- Games/                           (FreeGame, GameDeal, reports, GameStore(+names))
 |  |  |- Mvvm/                            (ObservableObject, RelayCommand)
 |  |  |- Net/HttpTextClient.cs
+|  |  |- Settings/                        (validated settings model + atomic JSON store)
 |  |  |- Sources/
 |  |  |  |- Epic/                         (free games + images + worth)
 |  |  |  |- GamerPower/                   (all-platform giveaways + images, skips Epic)
@@ -31,13 +32,14 @@ GameScout/
 |     |- Assets/gamescout.ico             (app + window + tray icon)
 |     |- Converters/Converters.cs
 |     |- Services/                        (ThemeManager, WindowChromeThemer, StartupRegistration,
-|     |                                    ScanLog, UrlOpener, AppIcon)
+|     |                                    SettingsService, ScanLog, UrlOpener, AppIcon)
 |     |- ViewModels/                      (ScannerViewModel base, FreeGamesViewModel,
-|     |                                    DealsViewModel, MainWindowViewModel, ScanOutcome)
+|     |                                    DealsViewModel, MainWindowViewModel, SettingsViewModel)
 |     |- Views/                           (FreeGamesView, DealsView user controls)
 |     |- Themes/                          (Theme.Light, Theme.Dark, Primitives)
 |     |- App.xaml (+ .cs)                 (DI composition root + tray)
 |     |- MainWindow.xaml (+ .cs)          (shell: top bar + tabs + footer)
+|     |- SettingsWindow.xaml (+ .cs)      (locale/country/min-worth editor)
 |- tests/
 |  |- GameScout.Core.Tests/              (net10.0, xUnit; Samples/ fixtures, TestSupport/ stubs)
 |- Directory.Build.props / global.json / GameScout.slnx

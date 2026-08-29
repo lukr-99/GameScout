@@ -1,5 +1,20 @@
 # WORKLOG
 
+## 2026-08-29 — Session 5: local install repair + persisted settings
+- Installed the verified `v0.1.0` release locally and diagnosed Windows failing to admit newly
+  created Start Menu shortcuts into its cached app list. Added a root Desktop/Start shortcut and
+  per-user App Paths registration locally; Windows Search indexed the Desktop shortcut and the app
+  launched responsive. Updated the Inno script so future installs create a root Start Menu shortcut
+  with `GameScout.App` identity plus App Paths registration.
+- Added a themed **Settings** window for Epic locale, country, and minimum giveaway worth. Settings
+  are validated, atomically stored in `%LOCALAPPDATA%\GameScout\settings.json`, and loaded before
+  Core services are built; changes apply on next app launch.
+- Added six deterministic settings validation/persistence tests and bumped the development version
+  to `0.2.0`.
+- Verified the `v0.1.0` Windows CI release and installer asset. Confirmed the private repository's
+  anonymous `releases/latest` endpoint returns 404, so update discovery/silent downloads remain
+  deferred until a public distribution endpoint or explicit authentication design is chosen.
+
 ## 2026-08-29 — Session 4: min-worth filter, update checker, installer/release scaffolding
 - **Min-worth filter:** `FreeGame` gained numeric `WorthAmount` (Epic from cents, GamerPower from
   parsed worth); `GiveawayAggregator` drops offers below `GameScoutOptions.MinimumWorth` (default

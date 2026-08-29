@@ -7,6 +7,7 @@ using GameScout.Core.Abstractions;
 using GameScout.Core.DependencyInjection;
 using GameScout.Core.Games;
 using GameScout.Core.Net;
+using GameScout.Core.Settings;
 using GameScout.Core.Updating;
 using Microsoft.Extensions.DependencyInjection;
 using Application = System.Windows.Application;
@@ -102,6 +103,15 @@ public partial class App : Application, IDisposable
     {
         var services = new ServiceCollection();
 
+        string settingsPath = System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "GameScout",
+            "settings.json");
+        var settingsStore = new JsonGameScoutSettingsStore(settingsPath);
+        var settingsService = new SettingsService(settingsStore);
+        services.AddSingleton(settingsStore);
+        services.AddSingleton(settingsService);
+
         services.AddSingleton(_ =>
         {
             var http = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
@@ -109,7 +119,12 @@ public partial class App : Application, IDisposable
             return http;
         });
         services.AddSingleton<IHttpTextClient>(sp => new HttpTextClient(sp.GetRequiredService<HttpClient>()));
-        services.AddGameScoutCore();
+        services.AddGameScoutCore(options =>
+        {
+            options.Locale = settingsService.Current.Locale;
+            options.Country = settingsService.Current.Country;
+            options.MinimumWorth = settingsService.Current.MinimumWorth;
+        });
 
         services.AddSingleton(_ => new ThemeManager(this));
         services.AddSingleton<StartupRegistration>();
@@ -118,6 +133,8 @@ public partial class App : Application, IDisposable
         services.AddSingleton<FreeGamesViewModel>();
         services.AddSingleton<DealsViewModel>();
         services.AddSingleton<MainWindowViewModel>();
+        services.AddTransient<SettingsViewModel>();
+        services.AddTransient<SettingsWindow>();
         services.AddSingleton<MainWindow>();
 
         return services.BuildServiceProvider();
@@ -138,6 +155,19 @@ public partial class App : Application, IDisposable
 
     /// <summary>Hides the main window to the notification area without exiting.</summary>
     public void HideToTray() => _window?.Hide();
+
+    /// <summary>Shows the modal settings editor owned by <paramref name="owner"/>.</summary>
+    /// <param name="owner">Window that owns the settings dialog.</param>
+    public void ShowSettings(Window owner)
+    {
+        if (_services is null)
+            return;
+
+        SettingsWindow settingsWindow = _services.GetRequiredService<SettingsWindow>();
+        settingsWindow.Owner = owner;
+        if (settingsWindow.ShowDialog() == true)
+            _log?.Info("settings saved; changes apply on next launch");
+    }
 
     /// <summary>Fully exits the application, removing the tray icon.</summary>
     public void ExitApp()

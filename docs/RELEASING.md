@@ -3,6 +3,12 @@
 GameScout ships as a per-user Windows installer, and the app checks GitHub Releases for updates on
 launch. Cutting a release is fully automated by tagging.
 
+> **Private repository limitation:** GitHub returns 404 for anonymous release API and asset requests
+> against a private repository. The app intentionally contains no embedded GitHub credential, so
+> installed builds cannot discover updates while the release repository remains private. The
+> `v0.1.0` pipeline itself is verified; automatic discovery needs a public release endpoint or an
+> explicit user-authentication design.
+
 ## How a release works
 1. Bump `<Version>` in `Directory.Build.props` (e.g. `0.3.0`) and commit.
 2. Tag and push:
@@ -15,7 +21,7 @@ launch. Cutting a release is fully automated by tagging.
    - `dotnet publish` the app self-contained for `win-x64`,
    - builds `GameScoutSetup-<version>.exe` with Inno Setup,
    - creates a GitHub Release and attaches the installer.
-4. On next launch, existing installs see the newer tag via the in-app **update checker**
+4. When releases are anonymously accessible, existing installs see the newer tag via the in-app **update checker**
    (`GameScout.Core.Updating`), show a tray notification, and the tray menu offers **Download update**
    (which points at the installer asset). Re-running the installer upgrades in place.
 
@@ -32,6 +38,6 @@ The installer lands in `installer/dist/`.
   tag (a leading `v` and any pre-release suffix are ignored). Keep tags as `vX.Y.Z`.
 
 ## Next step toward silent auto-update
-Today the app *notifies* and opens the installer download. A future iteration can download the asset
-to a temp folder and launch it with `/VERYSILENT` (Inno's silent flag) to update without the browser
-round-trip — the `ReleaseInfo.DownloadUrl` already exposes the asset URL for this.
+First choose a public binary distribution endpoint (or explicit user authentication). Once asset
+downloads are available to the installed app, it can download to a temp folder and launch the
+installer with `/VERYSILENT`; `ReleaseInfo.DownloadUrl` already exposes the selected asset URL.

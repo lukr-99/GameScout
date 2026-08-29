@@ -1,6 +1,6 @@
 # HANDOFF — GameScout
 
-Snapshot for resuming this project on a different machine. Updated 2026-08-29 (session 3).
+Snapshot for resuming this project on a different machine. Updated 2026-08-29 (session 5).
 
 ## Why this file exists
 The machine this was built on had hardware trouble (graphics died mid-session). Everything is pushed
@@ -20,11 +20,14 @@ one-class-per-file layout.
 
 ## Current status
 - `dotnet build GameScout.slnx -c Release` → **0 warnings, 0 errors**
-- `dotnet test GameScout.slnx -c Release` → **39/39 passing**
+- `dotnet test GameScout.slnx -c Release` → **45/45 passing**
 - **Data pipeline + DI + update checker verified live (headless):** free scan 13 free + 1 upcoming
   (after the min-worth filter), deals scan 32 on sale (see `%LOCALAPPDATA%\GameScout\scout.log`).
-- **Update checker** runs on launch (no releases yet → silent); tray shows a notification when a
-  newer GitHub Release exists. **Installer + release automation** are scaffolded but not yet run on CI.
+- **`v0.1.0` release verified end-to-end** on Windows CI with a published self-contained installer.
+  Because the repo remains private, the app's anonymous update request currently receives 404;
+  update discovery needs a public release endpoint or explicit user authentication.
+- **Settings UI:** locale/country/minimum-worth values persist to
+  `%LOCALAPPDATA%\GameScout\settings.json` and apply on the next launch.
 - **Visual rendering not yet eyeballed** on a real display — a top task below.
 
 ## How to resume (new machine)
@@ -59,7 +62,7 @@ tests/GameScout.Core.Tests (net10.0)     xUnit, deterministic (no network)
 - **Aggregators:** `GiveawayAggregator` (free, parallel, dedupe by title/store/kind, expiry filter)
   and `DealAggregator` (deals, dedupe by title keeping deepest discount, capped at 60).
 - **App view-models:** `ScannerViewModel` base (busy/error/status/refresh) → `FreeGamesViewModel`,
-  `DealsViewModel`; `MainWindowViewModel` shell (tabs + theme + run-at-startup).
+  `DealsViewModel`; `MainWindowViewModel` shell; `SettingsViewModel` validates persisted options.
 - **Services:** `ThemeManager` (runtime theme swap + event), `WindowChromeThemer` (DWM title-bar
   tint), `StartupRegistration` (HKCU Run key), `ScanLog`, `UrlOpener`, `AppIcon`.
 
@@ -73,13 +76,12 @@ tests/GameScout.Core.Tests (net10.0)     xUnit, deterministic (no network)
   app notifies via the tray and offers **Download update**.
 - Cutting a release is automated: bump `<Version>` in `Directory.Build.props`, then
   `git tag vX.Y.Z && git push origin vX.Y.Z`. The **Release** workflow publishes, builds the Inno
-  Setup installer, and attaches it to a GitHub Release (the asset the update checker points at).
-  Full details in `docs/RELEASING.md`. **Next:** run this once end-to-end (needs Windows CI).
+  Setup installer, and attaches it to a GitHub Release. `v0.1.0` completed successfully. Full
+  details and the private-repository update limitation are in `docs/RELEASING.md`.
 
 ## Known gaps / next slices (see TODO.md)
 - Visual smoke test still pending (above).
-- Installer/release workflow not yet exercised on CI; silent auto-update not yet implemented.
-- No settings UI yet for locale/country/min-worth (all supported in `GameScoutOptions`).
+- Update discovery and silent auto-update need an anonymously accessible release endpoint or user auth.
 - No app-layer view-model tests (Core is covered).
 
 ## Verification baseline (before committing)

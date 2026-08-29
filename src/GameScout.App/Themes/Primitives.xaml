@@ -54,6 +54,17 @@
         </Setter>
     </Style>
 
+    <!-- Theme-aware text input used by settings and future forms. -->
+    <Style x:Key="ScoutTextBox" TargetType="TextBox">
+        <Setter Property="Background" Value="{DynamicResource Input.Background}" />
+        <Setter Property="Foreground" Value="{DynamicResource Text.Primary}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource Text.Primary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Border.Subtle}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
     <!-- Clickable game card. Chrome is fully templated so hover/theme come from semantic keys. -->
     <Style x:Key="CardButton" TargetType="Button">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />

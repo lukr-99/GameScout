@@ -19,6 +19,8 @@ gives you a quick, glanceable rundown at startup.
 - **Light / dark themes** with a runtime toggle — including the **native Win11 title bar & border**,
   which are tinted to match the theme.
 - **Quality filter:** trivial freebies below a configurable price (default $2.99) are hidden.
+- **Persisted settings:** edit the Epic locale/country and minimum-worth filter from the app;
+  values are validated and loaded from `%LOCALAPPDATA%\GameScout\settings.json` on startup.
 - **Auto-update check:** on launch it checks GitHub Releases and offers the new installer from the tray.
 - Click any game to open its store/claim page in your browser.
 
@@ -55,8 +57,10 @@ A descriptive `User-Agent` is sent (required by CheapShark).
 
 ## Releases
 Installers are produced automatically by tagging (`vX.Y.Z`) — see **[docs/RELEASING.md](docs/RELEASING.md)**.
-The app checks GitHub Releases for updates on launch.
+The first `v0.1.0` release completed successfully on Windows CI. While this repository is private,
+installed copies cannot anonymously query or download its releases; update discovery stays inactive
+until releases move to a public endpoint or an explicit authentication model is added.
 
 ## Status
-Build clean, 39/39 tests passing; data pipeline + DI + update checker verified against live APIs.
+Build clean, 45/45 tests passing; data pipeline + DI verified against live APIs.
 Visual rendering is best confirmed on a real display — see HANDOFF.md.
