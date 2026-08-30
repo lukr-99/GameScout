@@ -10,20 +10,25 @@ namespace GameScout.App.ViewModels;
 public sealed class SettingsViewModel : ObservableObject
 {
     private readonly SettingsService _settingsService;
+    private readonly StartupRegistration _startup;
     private string _locale;
     private string _country;
     private string _minimumWorthText;
+    private bool _runAtStartup;
     private string _errorText = string.Empty;
 
     /// <summary>Initializes the editor from the current persisted settings.</summary>
     /// <param name="settingsService">Settings owner used to load and save values.</param>
-    public SettingsViewModel(SettingsService settingsService)
+    /// <param name="startup">Windows sign-in launch registration.</param>
+    public SettingsViewModel(SettingsService settingsService, StartupRegistration startup)
     {
         _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+        _startup = startup ?? throw new ArgumentNullException(nameof(startup));
         GameScoutSettings current = settingsService.Current;
         _locale = current.Locale;
         _country = current.Country;
         _minimumWorthText = current.MinimumWorth.ToString(CultureInfo.CurrentCulture);
+        _runAtStartup = startup.IsEnabled();
     }
 
     /// <summary>Storefront locale, such as en-US or cs-CZ.</summary>
@@ -45,6 +50,13 @@ public sealed class SettingsViewModel : ObservableObject
     {
         get => _minimumWorthText;
         set => SetProperty(ref _minimumWorthText, value);
+    }
+
+    /// <summary>Whether GameScout should launch quietly to the tray at Windows sign-in.</summary>
+    public bool RunAtStartup
+    {
+        get => _runAtStartup;
+        set => SetProperty(ref _runAtStartup, value);
     }
 
     /// <summary>Validation or persistence error shown by the settings window.</summary>
@@ -76,9 +88,14 @@ public sealed class SettingsViewModel : ObservableObject
             return false;
         }
 
+        // TryCreate resets Theme to its default; carry the currently-persisted theme forward so
+        // saving region settings never reverts the user's chosen appearance.
+        settings = settings with { Theme = _settingsService.Current.Theme };
+
         try
         {
             _settingsService.Save(settings);
+            _startup.Set(RunAtStartup);
             Locale = settings.Locale;
             Country = settings.Country;
             MinimumWorthText = settings.MinimumWorth.ToString(CultureInfo.CurrentCulture);

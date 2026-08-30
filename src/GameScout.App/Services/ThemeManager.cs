@@ -1,4 +1,5 @@
 using System.Windows;
+using GameScout.Core.Settings;
 using Application = System.Windows.Application;
 
 namespace GameScout.App.Services;
@@ -54,4 +55,14 @@ public sealed class ThemeManager
         Apply(Current == AppTheme.Light ? AppTheme.Dark : AppTheme.Light);
         return Current;
     }
+
+    /// <summary>Maps a persisted theme string (see <see cref="GameScoutSettings.Theme"/>) to an <see cref="AppTheme"/>.</summary>
+    public static AppTheme Parse(string? theme)
+        => string.Equals(theme, GameScoutSettings.ThemeDark, StringComparison.OrdinalIgnoreCase)
+            ? AppTheme.Dark
+            : AppTheme.Light;
+
+    /// <summary>Maps an <see cref="AppTheme"/> to its persisted string value.</summary>
+    public static string ToSettingValue(AppTheme theme)
+        => theme == AppTheme.Dark ? GameScoutSettings.ThemeDark : GameScoutSettings.ThemeLight;
 }

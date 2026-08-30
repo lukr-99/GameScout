@@ -9,6 +9,10 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Authors>Lukas Rejci</Authors>
     <Copyright>Copyright © Lukas Rejci</Copyright>
-    <Version>0.2.0</Version>
+    <VersionPrefix>0.3.0</VersionPrefix>
+    <!-- Debug builds carry a -dev suffix so a locally-run test instance is unmistakable from an
+         installed release (release CI overrides this with -p:Version=<tag>). AssemblyVersion stays
+         numeric (VersionPrefix), so the update check still compares cleanly. -->
+    <VersionSuffix Condition="'$(Configuration)' == 'Debug'">dev</VersionSuffix>
   </PropertyGroup>
 </Project>

@@ -66,6 +66,38 @@ public sealed class GameScoutSettingsTests
     }
 
     [Fact]
+    public void Save_ThenLoad_PreservesTheme()
+    {
+        string filePath = Path.Combine(Path.GetTempPath(), $"GameScout-settings-{Guid.NewGuid():N}.json");
+        try
+        {
+            var store = new JsonGameScoutSettingsStore(filePath);
+            store.Save(new GameScoutSettings("en-US", "US", 2.99m) { Theme = GameScoutSettings.ThemeDark });
+
+            GameScoutSettings loaded = store.Load();
+
+            Assert.Equal(GameScoutSettings.ThemeDark, loaded.Theme);
+        }
+        finally
+        {
+            File.Delete(filePath);
+        }
+    }
+
+    [Fact]
+    public void DefaultTheme_IsLight()
+        => Assert.Equal(GameScoutSettings.ThemeLight, GameScoutSettings.Default.Theme);
+
+    [Theory]
+    [InlineData("dark", "Dark")]
+    [InlineData(" DARK ", "Dark")]
+    [InlineData("light", "Light")]
+    [InlineData("nonsense", "Light")]
+    [InlineData(null, "Light")]
+    public void NormalizeTheme_MapsToKnownValue(string? input, string expected)
+        => Assert.Equal(expected, GameScoutSettings.NormalizeTheme(input));
+
+    [Fact]
     public void Load_MalformedJson_ReturnsDefaults()
     {
         string filePath = Path.Combine(Path.GetTempPath(), $"GameScout-settings-{Guid.NewGuid():N}.json");

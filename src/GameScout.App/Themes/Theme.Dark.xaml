@@ -19,6 +19,10 @@
 
     <SolidColorBrush x:Key="Border.Subtle" Color="#2C333D" />
 
+    <!-- Scrollbar thumb (track stays transparent). -->
+    <SolidColorBrush x:Key="ScrollBar.Thumb" Color="#3B434F" />
+    <SolidColorBrush x:Key="ScrollBar.ThumbHover" Color="#505A69" />
+
     <!-- Store badge colors (shared across themes). -->
     <SolidColorBrush x:Key="Badge.Epic" Color="#0A0A0A" />
     <SolidColorBrush x:Key="Badge.Steam" Color="#2A93D5" />

@@ -19,6 +19,8 @@ public partial class MainWindow : Window
     {
         _theme = theme ?? throw new ArgumentNullException(nameof(theme));
         InitializeComponent();
+        // Show the running version in the title bar so a dev/test build is distinct from a release.
+        Title = AppInfo.TitleWithVersion;
         DataContext = viewModel;
         _theme.ThemeChanged += OnThemeChanged;
     }

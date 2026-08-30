@@ -54,17 +54,7 @@
 
         <!-- Footer -->
         <Grid Grid.Row="2" Margin="0,14,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <CheckBox Grid.Column="0" Content="Run at startup" VerticalAlignment="Center"
-                      Foreground="{DynamicResource Text.Secondary}"
-                      IsChecked="{Binding RunAtStartup, Mode=TwoWay}" />
-
-            <Button Grid.Column="2" Content="Hide" Style="{StaticResource PrimaryButton}"
+            <Button HorizontalAlignment="Right" Content="Hide" Style="{StaticResource PrimaryButton}"
                     Click="OnHideClick" />
         </Grid>
     </Grid>

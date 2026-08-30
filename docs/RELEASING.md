@@ -10,7 +10,7 @@ launch. Cutting a release is fully automated by tagging.
 > explicit user-authentication design.
 
 ## How a release works
-1. Bump `<Version>` in `Directory.Build.props` (e.g. `0.3.0`) and commit.
+1. Bump `<VersionPrefix>` in `Directory.Build.props` (e.g. `0.3.0`) and commit.
 2. Tag and push:
    ```bash
    git tag v0.3.0
@@ -33,7 +33,11 @@ iscc /DAppVersion=0.3.0 installer/GameScout.iss   # needs Inno Setup 6 (ISCC.exe
 The installer lands in `installer/dist/`.
 
 ## Versioning
-- App/assembly version comes from `Directory.Build.props` `<Version>`; CI overrides it from the tag.
+- App/assembly version comes from `Directory.Build.props` `<VersionPrefix>`; CI overrides it from the
+  tag via `-p:Version=<tag>`.
+- Debug builds append a `-dev` suffix (`<VersionSuffix>`), so a locally-run test instance shows
+  e.g. `GameScout 0.3.0-dev` in its title bar and tray tooltip while a release shows `GameScout 0.3.0`.
+  The suffix only affects the informational version; `AssemblyVersion` stays numeric.
 - The update checker compares `major.minor.build` of the running assembly against the latest release
   tag (a leading `v` and any pre-release suffix are ignored). Keep tags as `vX.Y.Z`.
 

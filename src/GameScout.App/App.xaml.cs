@@ -42,7 +42,12 @@ public partial class App : Application, IDisposable
         _services = BuildServices();
 
         _log = _services.GetRequiredService<ScanLog>();
-        _log.Info($"app started ({(startInTray ? "tray" : "window")} mode)");
+        _log.Info($"app started v{AppInfo.Version} ({(startInTray ? "tray" : "window")} mode)");
+
+        // Restore the persisted theme before any window is created so its chrome comes up tinted.
+        SettingsService settings = _services.GetRequiredService<SettingsService>();
+        ThemeManager theme = _services.GetRequiredService<ThemeManager>();
+        theme.Apply(ThemeManager.Parse(settings.Current.Theme));
 
         _viewModel = _services.GetRequiredService<MainWindowViewModel>();
         _viewModel.Free.ScanCompleted += OnFreeScanCompleted;
@@ -209,18 +214,6 @@ public partial class App : Application, IDisposable
         menu.Items.Add("Show rundown", null, (_, _) => ShowWindow());
         menu.Items.Add("Refresh now", null, (_, _) => _viewModel?.RefreshAll());
         menu.Items.Add(new ToolStripSeparator());
-
-        var startupItem = new ToolStripMenuItem("Run at Windows startup")
-        {
-            CheckOnClick = true,
-            Checked = _viewModel?.RunAtStartup ?? false,
-        };
-        startupItem.CheckedChanged += (_, _) =>
-        {
-            if (_viewModel is not null)
-                _viewModel.RunAtStartup = startupItem.Checked;
-        };
-        menu.Items.Add(startupItem);
         menu.Items.Add("Open log folder", null, (_, _) => OpenLogFolder());
 
         _updateMenuItem = new ToolStripMenuItem("Download update") { Visible = false };
@@ -233,7 +226,7 @@ public partial class App : Application, IDisposable
         _tray = new NotifyIcon
         {
             Icon = AppIcon.LoadTrayIcon(),
-            Text = "GameScout",
+            Text = AppInfo.TitleWithVersion,
             Visible = true,
             ContextMenuStrip = menu,
         };

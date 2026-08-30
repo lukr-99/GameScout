@@ -71,7 +71,10 @@
         </Grid>
 
         <StackPanel Grid.Row="4">
-            <TextBlock Text="Changes apply the next time GameScout starts."
+            <CheckBox Content="Run GameScout at Windows startup" Margin="0,0,0,14"
+                      Foreground="{DynamicResource Text.Primary}"
+                      IsChecked="{Binding RunAtStartup, Mode=TwoWay}" />
+            <TextBlock Text="Region changes apply the next time GameScout starts."
                        Foreground="{DynamicResource Text.Secondary}" />
             <TextBlock Text="{Binding ErrorText}" Margin="0,10,0,0" TextWrapping="Wrap"
                        Foreground="{DynamicResource Text.Error}"

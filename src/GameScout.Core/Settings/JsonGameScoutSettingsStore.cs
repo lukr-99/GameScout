@@ -43,7 +43,7 @@ public sealed class JsonGameScoutSettingsStore
                 persisted.MinimumWorth,
                 out GameScoutSettings? normalized,
                 out _)
-                ? normalized
+                ? normalized with { Theme = GameScoutSettings.NormalizeTheme(persisted.Theme) }
                 : GameScoutSettings.Default;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
@@ -72,10 +72,14 @@ public sealed class JsonGameScoutSettingsStore
         if (!string.IsNullOrEmpty(directory))
             Directory.CreateDirectory(directory);
 
+        // TryCreate validates only the region/worth fields; carry the theme through untouched
+        // (normalized to a known value) so saving never silently drops the persisted theme.
+        GameScoutSettings toPersist = normalized with { Theme = GameScoutSettings.NormalizeTheme(settings.Theme) };
+
         string temporaryPath = fullPath + ".tmp";
         try
         {
-            string json = JsonSerializer.Serialize(normalized, SerializerOptions);
+            string json = JsonSerializer.Serialize(toPersist, SerializerOptions);
             File.WriteAllText(temporaryPath, json);
             File.Move(temporaryPath, fullPath, true);
         }

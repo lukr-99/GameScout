@@ -6,6 +6,12 @@ namespace GameScout.Core.Settings;
 /// <summary>Persisted user preferences that configure giveaway sources and filtering.</summary>
 public sealed record GameScoutSettings
 {
+    /// <summary>Canonical value for the light theme.</summary>
+    public const string ThemeLight = "Light";
+
+    /// <summary>Canonical value for the dark theme.</summary>
+    public const string ThemeDark = "Dark";
+
     /// <summary>Default settings used when no valid settings file exists.</summary>
     public static GameScoutSettings Default { get; } = new("en-US", "US", 2.99m);
 
@@ -28,6 +34,21 @@ public sealed record GameScoutSettings
 
     /// <summary>Minimum normal price for known-price giveaways.</summary>
     public decimal MinimumWorth { get; init; }
+
+    /// <summary>
+    /// Selected UI theme; one of <see cref="ThemeLight"/> or <see cref="ThemeDark"/>. Kept as a
+    /// string so the Core settings model stays independent of the WPF theme enum. Not part of the
+    /// positional constructor: it round-trips via <see cref="NormalizeTheme"/> in the store.
+    /// </summary>
+    public string Theme { get; init; } = ThemeLight;
+
+    /// <summary>Normalizes an arbitrary theme string to a known value, defaulting to light.</summary>
+    /// <param name="theme">Candidate theme name (case-insensitive).</param>
+    /// <returns><see cref="ThemeDark"/> when the value names dark; otherwise <see cref="ThemeLight"/>.</returns>
+    public static string NormalizeTheme(string? theme)
+        => string.Equals(theme?.Trim(), ThemeDark, StringComparison.OrdinalIgnoreCase)
+            ? ThemeDark
+            : ThemeLight;
 
     /// <summary>Validates and normalizes user-entered settings.</summary>
     /// <param name="locale">Candidate locale.</param>

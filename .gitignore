@@ -8,6 +8,10 @@ artifacts/
 *.suo
 .vs/
 
+## Release build outputs (produced by dotnet publish + Inno Setup)
+publish/
+installer/dist/
+
 ## Rider / VS Code
 .idea/
 .vscode/
