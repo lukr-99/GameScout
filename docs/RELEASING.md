@@ -3,11 +3,10 @@
 GameScout ships as a per-user Windows installer, and the app checks GitHub Releases for updates on
 launch. Cutting a release is fully automated by tagging.
 
-> **Private repository limitation:** GitHub returns 404 for anonymous release API and asset requests
-> against a private repository. The app intentionally contains no embedded GitHub credential, so
-> installed builds cannot discover updates while the release repository remains private. The
-> `v0.1.0` pipeline itself is verified; automatic discovery needs a public release endpoint or an
-> explicit user-authentication design.
+> **Update discovery:** the repository is public, so the anonymous release API and asset downloads
+> the app relies on both work — installed builds discover new tags on launch with no embedded
+> credential. (While the repo was private these returned 404; keep the release repo public, or add
+> explicit user authentication, for discovery to keep working.)
 
 ## How a release works
 1. Bump `<VersionPrefix>` in `Directory.Build.props` (e.g. `0.3.0`) and commit.
@@ -21,9 +20,9 @@ launch. Cutting a release is fully automated by tagging.
    - `dotnet publish` the app self-contained for `win-x64`,
    - builds `GameScoutSetup-<version>.exe` with Inno Setup,
    - creates a GitHub Release and attaches the installer.
-4. When releases are anonymously accessible, existing installs see the newer tag via the in-app **update checker**
-   (`GameScout.Core.Updating`), show a tray notification, and the tray menu offers **Download update**
-   (which points at the installer asset). Re-running the installer upgrades in place.
+4. Existing installs see the newer tag via the in-app **update checker** (`GameScout.Core.Updating`),
+   show a tray notification, and the tray menu offers **Download update** (which points at the
+   installer asset). Re-running the installer upgrades in place.
 
 ## Building the installer locally (Windows)
 ```bash
