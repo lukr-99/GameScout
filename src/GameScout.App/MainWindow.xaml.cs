@@ -61,4 +61,10 @@ public partial class MainWindow : Window
         if (System.Windows.Application.Current is App app)
             app.ShowSettings(this);
     }
+
+    private void OnAboutClick(object sender, RoutedEventArgs e)
+    {
+        if (System.Windows.Application.Current is App app)
+            app.ShowAbout(this);
+    }
 }

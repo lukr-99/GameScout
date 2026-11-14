@@ -91,3 +91,9 @@
 - Build: 0 warnings / 0 errors. Tests: 13/13.
 - Dev machine hardware began failing — created `HANDOFF.md` and pushed to a private GitHub repo so
   work can continue on another device. **Manual interactive smoke test still pending.**
+
+## About page
+- Added `AboutWindow` (footer button): hero with build version, author card with Instagram, GitHub and
+  Issues links, credits and licences. Text and links live in `Core/About/AboutInfo`, covered by
+  `AboutInfoTests`. Fade-in is skipped when Windows animations are off.
+- Not yet eyeballed on a real display. The repo has no licence file, and the page says so.

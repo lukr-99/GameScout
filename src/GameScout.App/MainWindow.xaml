@@ -54,6 +54,8 @@
 
         <!-- Footer -->
         <Grid Grid.Row="2" Margin="0,14,0,0">
+            <Button HorizontalAlignment="Left" Content="About" Style="{StaticResource GhostButton}"
+                    Click="OnAboutClick" />
             <Button HorizontalAlignment="Right" Content="Hide" Style="{StaticResource PrimaryButton}"
                     Click="OnHideClick" />
         </Grid>

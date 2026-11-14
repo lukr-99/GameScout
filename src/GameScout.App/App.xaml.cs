@@ -140,6 +140,7 @@ public partial class App : Application, IDisposable
         services.AddSingleton<MainWindowViewModel>();
         services.AddTransient<SettingsViewModel>();
         services.AddTransient<SettingsWindow>();
+        services.AddTransient<AboutWindow>();
         services.AddSingleton<MainWindow>();
 
         return services.BuildServiceProvider();
@@ -172,6 +173,18 @@ public partial class App : Application, IDisposable
         settingsWindow.Owner = owner;
         if (settingsWindow.ShowDialog() == true)
             _log?.Info("settings saved; changes apply on next launch");
+    }
+
+    /// <summary>Shows the modal About page owned by <paramref name="owner"/>.</summary>
+    /// <param name="owner">Window that owns the About dialog.</param>
+    public void ShowAbout(Window owner)
+    {
+        if (_services is null)
+            return;
+
+        AboutWindow about = _services.GetRequiredService<AboutWindow>();
+        about.Owner = owner;
+        about.ShowDialog();
     }
 
     /// <summary>Fully exits the application, removing the tray icon.</summary>

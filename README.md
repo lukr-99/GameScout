@@ -22,6 +22,7 @@ gives you a quick, glanceable rundown at startup.
 - **Persisted settings:** edit the Epic locale/country and minimum-worth filter from the app;
   values are validated and loaded from `%LOCALAPPDATA%\GameScout\settings.json` on startup.
 - **Auto-update check:** on launch it checks GitHub Releases and offers the new installer from the tray.
+- **About page** (footer button): version, author credit, feedback links and credits.
 - Click any game to open its store/claim page in your browser.
 
 ## Requirements

@@ -13,6 +13,7 @@ GameScout/
 |  |  |  |- IGiveawaySource.cs            (free-game sources)
 |  |  |  |- IDealSource.cs                (on-sale sources)
 |  |  |  |- IHttpTextClient.cs
+|  |  |- About/                           (AboutInfo: author, links, credits)
 |  |  |- Aggregation/
 |  |  |  |- GiveawayAggregator.cs         (free games, parallel fan-out)
 |  |  |  |- DealAggregator.cs             (deals, dedupe by title, deepest first)
@@ -39,6 +40,7 @@ GameScout/
 |     |- Themes/                          (Theme.Light, Theme.Dark, Primitives)
 |     |- App.xaml (+ .cs)                 (DI composition root + tray)
 |     |- MainWindow.xaml (+ .cs)          (shell: top bar + tabs + footer)
+|     |- AboutWindow.xaml (+ .cs)         (hero, author card, feedback links, credits)
 |     |- SettingsWindow.xaml (+ .cs)      (locale/country/min-worth editor)
 |- tests/
 |  |- GameScout.Core.Tests/              (net10.0, xUnit; Samples/ fixtures, TestSupport/ stubs)
