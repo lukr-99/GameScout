@@ -1,0 +1,36 @@
+# Local (Kiln) version of .github/workflows/ci.yml. Run it with:
+#   kiln run .kiln/workflows/ci.yml --repo .
+# GitHub runs this on windows-latest. Kiln uses a Linux container with EnableWindowsTargeting, so the
+# restore, format check and build of the whole solution (including the WPF app) run here.
+# Left out, still run by GitHub Actions: nothing. GameScout.Core.Tests targets plain net10.0 and is
+# the only test project.
+name: CI
+
+on:
+  workflow_dispatch:
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  EnableWindowsTargeting: "true"
+
+jobs:
+  build:
+    name: Format, build and tests (Linux)
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/dotnet/sdk:10.0
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Restore
+        run: dotnet restore GameScout.slnx
+
+      - name: Format check
+        run: dotnet format GameScout.slnx --verify-no-changes --severity warn --no-restore
+
+      - name: Build
+        run: dotnet build GameScout.slnx -c Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/GameScout.Core.Tests/GameScout.Core.Tests.csproj -c Release --no-build
